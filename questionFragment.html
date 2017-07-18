@@ -15,11 +15,96 @@
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
   </head>
-  <body>
+  <body onLoad="displayQuestion()">
+	<div class="container">
+      <div class="row">
+        <div class="col-lg-6"></div>
+        <div class="col-lg-6"></div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6"></div>
+        <div class="col-lg-6"></div>
+      </div>
+	</div>
+	<div class="container"></div>
 	
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>  
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"></script>
+ <script>
+	 
 
+	   
+  var config = {
+      apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
+      databaseURL: "https://studymechanics.firebaseio.com"      
+  };
+	function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+}
+	firebase.initializeApp(config);
+	 
+	function getParameter(url,name){
+		var pattern=  RegExp(name+'=([^&]+)', 'i')
+		var captured = pattern.exec(url)[1];
+    //var captured = /category=([^&]+)/.exec(url)[1]; // Value is in [1] ('384' in our case)
+    var result = captured ? captured : 'notFound';
+			return result;
+			
+		} 
+	 
+	 function createRow(isQuestion,text,image,containerID){
+		 
+	 }
+	 
+	 function displayQuestion(){
+	 //var category=getParameter(url,"category");
+	 //var question=getParameter(url,"question");	
+		 var category="Force";
+		 var question="question1";
+
+	var oneQuestionQuery= firebase.database().ref("questions").child(category).child("questions").child(question).orderByKey();
+	 oneQuestionQuery.once("value").then(
+			function(snapshot) {  
+				//TODO: set header vakue to snapshot.key				
+				//display question				
+				createRow(true,snapshot.val().text,snapshot.val().img,"containerID");	
+				 //display answer options
+				for (var inner_key in value){	
+					 text=value[inner_key].text;
+				 }
+				
+				/*snapshot.forEach(function(childSnapshot) {
+				  key=childSnapshot.key;			  
+				  if(key=="answers"){
+					 childSnapshot.forEach(function(answerSnapshot){
+						  console.log("Creating row for"+answerSnapshot.key);
+						  createAnswerRow(answerSnapshot.key,"questionContainer");
+						  var answer=answerSnapshot.val();
+						  console.log(answer);
+						  document.getElementById("textarea"+answerSnapshot.key).innerHTML=answer["text"];
+						  downloadAndDisplayImage(answer["img"],"image"+answerSnapshot.key);					 					  		    
+					 });//childSnapshot.forEach end	
+					 createHugeButton("questionContainer");   
+				  } else{
+					  if(key=="img"){
+					   //load image				   
+					   downloadAndDisplayImage(childSnapshot.val(),"questionImg");				   
+
+					  } else{
+						if(key=="text")  document.getElementById("questionText").innerHTML=childSnapshot.val();
+					  }
+				  }
+
+				});*/ //end of snapshot.forEach(function(childSnapshot)						
+			 }
+		);//end of oneQuestionQuery.once("value").then 
+		  }//end of function displayQuestion()
+	  
+	  </script> 
 	<!-- Include all compiled plugins (below), or include individual files as needed --> 
 	<script src="js/bootstrap.js"></script>
   </body>

@@ -1,0 +1,22 @@
+@charset "utf-8";
+/* CSS Document */
+.fade {
+  animation: fade 1s 6.5s forwards;
+}
+@keyframes fade {
+  25% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.start-now, .start-now:after {
+  animation-delay: 0;
+}

@@ -8,6 +8,7 @@
     <!-- Bootstrap -->
 	<link href="css/bootstrap.css" rel="stylesheet">
 	
+	
 	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>  
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
@@ -26,6 +27,10 @@
 			var dict = {};
 			document.getElementById("result_text_div").style.visibility="hidden";
 			var queryText = document.getElementById("search").value;
+			if(queryText==null || queryText==""){
+				alert("Enter search text!");
+				return;
+			}
 			
 			var result_list = document.getElementById("result_list");
 			  while (result_list.firstChild) {
@@ -61,13 +66,21 @@
 				 }
 					if(!isEmpty(questions_text)){
 						dict[key]=questions_text;
+						
 					}					
 				});	 				
 				
 			  			
 			});	
+			//no match
+			if(isEmpty(dict)){
+				var entry = document.createElement('li');
+				entry.appendChild(document.createTextNode("No match."));
+				result_list.appendChild(entry);		
+			}	
 			
-			document.getElementById("result_list").style.visibility="visible";			
+			var mainList=document.getElementById("result_list").style.visibility="visible";
+			
 		} 
 	
 		function displayQuestionText(category,question,text){			
