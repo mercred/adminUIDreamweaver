@@ -32,10 +32,11 @@
 				return;
 			}
 			
-			var result_list = document.getElementById("result_list");
-			  while (result_list.firstChild) {
+			var result_list = document.getElementById("result_list");			
+			
+			while (result_list.firstChild) {
 				result_list.removeChild(result_list.firstChild);
-			  }
+			}					
 			var queryCategories =firebase.database().ref("questions").orderByKey();		
 		    queryCategories.once("value").then(
 			function(snapshot) {				
@@ -49,8 +50,8 @@
 					{
 						questions_text[inner_key]=text;
 						var entry = document.createElement('li');	
-						
-						 entry.addEventListener('click', (function(kkey, iinner_key,ttext) {
+						entry.setAttribute("id",key+inner_key);
+						entry.addEventListener('click', (function(kkey, iinner_key,ttext) {
 							 	return function() {
 										displayQuestionText(kkey,iinner_key, ttext);
 									}
@@ -70,27 +71,23 @@
 					}					
 				});	 				
 				
-			  			
-			});	
-			//no match
+			  //no match
 			if(isEmpty(dict)){
 				var entry = document.createElement('li');
 				entry.appendChild(document.createTextNode("No match."));
-				result_list.appendChild(entry);		
+				entry.setAttribute("id","noMatchNode");
+				result_list.appendChild(entry);
 			}	
-			
-			var mainList=document.getElementById("result_list").style.visibility="visible";
-			
-		} 
+			var mainList=document.getElementById("result_list").style.visibility="visible";			
+			});		//listener end					
+		}//function getQueryResults() end 
 	
-		function displayQuestionText(category,question,text){			
+		function displayQuestionText(category,question,text){
 			
-			document.getElementById("result_text_div").style.visibility="visible";
-			selectedCategory=category;
-			selectedQuestion=question;
-			document.getElementById("result_text").innerHTML=text;			
-			var textHref="single_question.html#category="+selectedCategory+"&question="+selectedQuestion;
-			document.getElementById("displayQuestionButton").href=textHref;
+			document.getElementById("result_text_div").style.visibility="visible";			
+			document.getElementById("result_text").innerHTML=text;
+			var textHref="single_question.html#category="+category+"&question="+question;
+			document.getElementById("displayQuestionButton").href=textHref;		
 		}
 	  
 	  
@@ -140,13 +137,10 @@
       </div>
       <div class="row" id="result_row" style="visibility: hidden">
         <div class="col-xs-6">
-          <ul class="nav nav-pills nav-stacked" id="result_list">
-            <li role="presentation"><a href="#">Pill 1</a></li>
-            <li role="presentation"><a href="#">Pill 2</a></li>
-            <li role="presentation"><a href="#">Pill 3</a></li>            
+          <ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="result_list">                    
           </ul>
         </div>
-        <div class="col-xs-6" id="result_text_div" style="visibility: hidden">
+        <div class="col-xs-6" id="result_text_div" style="border: 2px solid black;visibility: hidden">
           <p id="result_text"></p>          
           <a href="#" id="displayQuestionButton" class="btn btn-primary">OPEN</a>
         </div>
