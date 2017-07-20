@@ -8,6 +8,126 @@
     <!-- Bootstrap -->
 	<link href="css/bootstrap.css" rel="stylesheet">
 
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>  
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
+
+<script language="javascript">
+	
+var categoriesList;
+var currentCategory;
+var config = {
+      apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
+      databaseURL: "https://studymechanics.firebaseio.com"      
+  };
+firebase.initializeApp(config);
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+}
+function loadCategories(){  
+  categoriesList=[];
+  var result_list = document.getElementById("categories_list");
+  while (result_list.firstChild) {
+      result_list.removeChild(result_list.firstChild);
+ }		
+	
+  var queryCategories =  firebase.database().ref("Categories").orderByKey();   
+  queryCategories.once("value").then(
+    function(snapshot) {	    
+    	snapshot.forEach(function(childSnapshot) {		      
+          var key = childSnapshot.key;
+		  categoriesList.push(key);
+		  addCategoryToList(key);		 
+        });	 
+	    
+    });
+}	
+function addCategoryToList(categoryName){
+	var entry = document.createElement('li');	
+	//entry.setAttribute("id",key+inner_key);
+	entry.addEventListener('click', (function(category) {
+			return function() {
+					getCategoryData(category);
+				}
+		})(categoryName));						
+
+	var a = document.createElement('a');  						 
+	a.appendChild(document.createTextNode(categoryName));	
+	a.href = "#";							
+	entry.appendChild(a);	
+	document.getElementById("categories_list").appendChild(entry);	
+}
+function createEmptyCategory(){
+  var categoryName = document.getElementById("categoryName").value;
+  document.getElementById("categoryName").value=null;
+  if(categoriesList.contains(categoryName)){
+  	alert("Category with this name already exists!");  
+  }else{
+  		if(categoryName==null|| categoryName==""){
+		alert("You must assign a name");		
+		}
+		else{
+  	  createEmptyCategoryDB(categoryName);
+	  loadCategories();
+	   }  	    	  
+  }
+}
+function createEmptyCategoryDB(categoryName) {
+  firebase.database().ref('Categories').child(categoryName).set(0);
+  firebase.database().ref('questions').child(categoryName).set({
+  material:"Empty",
+  questions:"Empty"  
+  });
+}
+function deleteCurrentCategory(){
+  console.log(currentCategory);
+  firebase.database().ref('Categories').child(currentCategory).set(null);
+  firebase.database().ref('questions').child(currentCategory).set(null);
+  currentCategory=null;
+  loadCategories();
+}
+function getCategoryData(category){
+//Event handler for selecting a category
+currentCategory= category;
+	
+var displayBackgroundMaterial = function(e){  
+    
+	document.getElementById("questions_block").style.display="none";	
+	
+	e.target.classList.add("active");
+	if(document.getElementById(String(config.apiKey)+currentCategory)!=null){	   
+	   document.getElementById(String(config.apiKey)+currentCategory).classList.remove("active");	
+	}
+	currentCategory= e.target.innerText;	
+	console.log("Curent category is"+currentCategory);
+	getCategoryBackgroundMaterialDB();		
+	getListOfBGImagesAndDisplayDB();  
+}
+		 
+		
+		
+	}
+function uniqueID(){
+  function chr4(){
+    return Math.random().toString(16).slice(-4);
+  }
+  return chr4() + chr4() +
+    '-' + chr4() +
+    '-' + chr4() +
+    '-' + chr4() +
+    '-' + chr4() + chr4() + chr4();
+}
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+	  </script>
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -15,8 +135,8 @@
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
   </head>
-  <body>
-	<div class="container" style="width: 100%">
+  <body onLoad="loadCategories()">
+	<div class="container" style="width: 90%">
       <header class="row">
         <div class="col-lg-12">
           <h1>Admin Firebase UI</h1>
@@ -32,9 +152,84 @@
       </div>
       <div class="row">
     <div class="col-lg-12">
-      <h1>Category HTML CONTENT</h1>
-    </div>
+      <div class="row" style="width: 100%">
+      <div class="col-lg-3" id="categories">
+         <div class="row">
+            <div class="col-lg-12">
+              <label for="textfield2">Enter name:</label>
+              <input type="text" name="textfield2" id="categoryName">            	
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <button type="button" class="btn btn-default" onClick="createEmptyCategory()"> Create new category    
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+            <label>List of Categories:</label>
+            	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="categories_list">
+          </ul> 
+            </div>
+          </div>
+         
+                   
+        </div><!-- categoryList-->
+      <div class="col-lg-5">
+             <div class="row" style="border: 1px solid black">
+               <div class="col-lg-9">
+                 <h3 id="name">Category Name:</h3>
+                 <h5 id="nQuestions">Number of questions:</h5>
+               </div>
+               <div class="col-lg-3">                 
+                 <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                   <button type="button" class="btn btn-danger" onClick="deleteCurrentCategory()">Delete Category</button>
+                   <button type="button" class="btn btn-primary">Show Questions</button>  
+                   <button type="button" class="btn btn-info">Show Preview</button>                   
+                 </div>
+               </div>
+             </div>
+             <div class="row" style="border: 1px solid black">
+               <div class="col-lg-12">
+				   <div class="row">
+				   <div class="col-lg-12">
+					 <label for="textarea">Background Material:</label>
+					 <textarea name="textarea" id="textarea" style="width:100%;resize: none"></textarea>             
+					</div>
+				  </div>
+               <div class="row">
+              <div class="col-lg-4">                
+               </div>
+               <div class="col-lg-4">
+                 <button type="button" class="btn btn-success">Save changes</button>
+               </div>
+               <div class="col-lg-4">
+                 <button type="button" class="btn btn-danger">Discard changes</button>
+               </div>
+             </div>
+               </div>
+               <div>
+             
+             
+           </div><!-- options and text -->           
       </div>
+    </div><!-- main-->
+      <div class="col-lg-4">
+            <div class="row">
+              <div class="col-lg-6"></div>
+              <div class="col-lg-6"></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12"></div>
+              <div class="row">
+                <div class="col-lg-12"></div>
+              </div>
+            </div>
+          </div><!-- images--> 
+      </div>
+	</div>
+	</div>
 	</div>
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 	<script src="js/jquery-1.11.3.min.js"></script>
