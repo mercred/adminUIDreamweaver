@@ -11,16 +11,23 @@
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>  
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"></script>
+
 
 <script language="javascript">
 	
 var categoriesList;
-var currentCategory;
+var currentCategory,currentCategoryBGText;
+var bgImageList;
 var config = {
       apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
-      databaseURL: "https://studymechanics.firebaseio.com"      
+      databaseURL: "https://studymechanics.firebaseio.com",
+	storageBucket: "studymechanics.appspot.com"
   };
 firebase.initializeApp(config);
+	
+
+	
 function isEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
@@ -87,26 +94,87 @@ function deleteCurrentCategory(){
   loadCategories();
 }
 function getCategoryData(category){
-//Event handler for selecting a category
-currentCategory= category;
-	
-var displayBackgroundMaterial = function(e){  
-    
-	document.getElementById("questions_block").style.display="none";	
-	
-	e.target.classList.add("active");
-	if(document.getElementById(String(config.apiKey)+currentCategory)!=null){	   
-	   document.getElementById(String(config.apiKey)+currentCategory).classList.remove("active");	
-	}
-	currentCategory= e.target.innerText;	
-	console.log("Curent category is"+currentCategory);
+	currentCategory= category;
+	document.getElementById('name').innerHTML=currentCategory;
+	getCategoryNQuestions();
 	getCategoryBackgroundMaterialDB();		
 	getListOfBGImagesAndDisplayDB();  
 }
-		 
-		
-		
-	}
+	
+function getCategoryNQuestions(){
+	//display number of questions
+	var getCategoryQuestionCount=firebase.database().ref('Categories').child(currentCategory);
+	getCategoryQuestionCount.once("value").then(
+      function(snapshot) {
+  		 document.getElementById("nQuestions").value=snapshot.val();
+      });
+	
+}	
+function getCategoryBackgroundMaterialDB(){
+  
+  var getCategoryBackgroundMaterial =  firebase.database().ref("questions/"+currentCategory+"/material/text");  
+    getCategoryBackgroundMaterial.once("value").then(
+      function(snapshot) {  	    
+  	     currentCategoryBGText = snapshot.val();			  
+  		 document.getElementById("textarea").value=currentCategoryBGText;		 
+      });	  		 
+}	 
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+function getListOfBGImagesAndDisplayDB(){
+var allImagesQuery= firebase.database().ref("questions/"+currentCategory+"/material/imgs");
+allImagesQuery.once("value").then(
+      function(snapshot) {
+	  	 
+	  var html_list = document.getElementById("bg_images_list");
+      while (html_list.firstChild) {
+        html_list.removeChild(html_list.firstChild);
+      }	
+      bgImageList=[];
+      snapshot.forEach(function(childSnapshot) {           	 
+          bgImageList.push[childSnapshot.key];
+		  
+		  
+		  var valueBG=childSnapshot.val(); console.log(valueBG);
+		  var entry = document.createElement('li');		
+	entry.addEventListener('click', (function(imageVal) {
+			return function() {
+					displayImageBG(imageVal);
+				}
+		})(valueBG));
+	var a = document.createElement('a');  						 
+	a.appendChild(document.createTextNode(childSnapshot.key));	
+	a.href = "#";							
+	entry.appendChild(a);	
+	html_list.appendChild(entry);
+		  });		
+       }
+  ).catch(function(error) {
+   alert("Request to image list for background material failed with following error: "+error);
+});  	
+}		
+function displayImageBG(imageVal){		
+	downloadAndDisplayImage(imageVal,"bgImageId");		
+}	
+//downloads image with name ImageStorageName and loads into img with id ImageHTML
+function downloadAndDisplayImage(ImageStorageName,ImageHTML){
+		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
+    		 // url is the download URL for our image
+			 console.log("url:"+url);
+           var img = document.getElementById(ImageHTML);
+           img.src = url;
+  		 }).catch(function(error) {
+              alert("During downloading of background material images following error occured: "+error);
+           });
+}	
 function uniqueID(){
   function chr4(){
     return Math.random().toString(16).slice(-4);
@@ -195,7 +263,7 @@ Array.prototype.contains = function(obj) {
 				   <div class="row">
 				   <div class="col-lg-12">
 					 <label for="textarea">Background Material:</label>
-					 <textarea name="textarea" id="textarea" style="width:100%;resize: none"></textarea>             
+					 <textarea name="textarea" id="textarea" style="width:100%;resize: none;height: 50vh"></textarea>             
 					</div>
 				  </div>
                <div class="row">
@@ -221,10 +289,18 @@ Array.prototype.contains = function(obj) {
               <div class="col-lg-6"></div>
             </div>
             <div class="row">
-              <div class="col-lg-12"></div>
+              <div class="col-lg-12" ><img id="bgImageId" src="images/ImgResponsive_Placeholder.png" class="img-responsive" alt="Placeholder image"></div>         
+                            
               <div class="row">
-                <div class="col-lg-12"></div>
-              </div>
+                <div class="col-lg-12">
+                 <label>List of Images:</label>
+                	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="bg_images_list"></ul>           
+                </div>
+              </div>              
+              
+              
+              
+              
             </div>
           </div><!-- images--> 
       </div>
