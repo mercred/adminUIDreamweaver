@@ -37,7 +37,8 @@ function loadCategories(){
   while (result_list.firstChild) {
       result_list.removeChild(result_list.firstChild);
  }		
-	
+  document.getElementById("mainContainer").style.visibility="hidden";	
+  document.getElementById("imagesContainer").style.visibility="hidden";
   var queryCategories =  firebase.database().ref("Categories").orderByKey();   
   queryCategories.once("value").then(
     function(snapshot) {	    
@@ -98,7 +99,11 @@ function getCategoryData(category){
 	document.getElementById('name').innerHTML=currentCategory;
 	getCategoryNQuestions();
 	getCategoryBackgroundMaterialDB();		
-	getListOfBGImagesAndDisplayDB();  
+	getListOfBGImagesAndDisplayDB(); 
+	document.getElementById("mainContainer").style.visibility="visible";	
+    document.getElementById("imagesContainer").style.visibility="visible";
+	document.getElementById("bgImageId").src="images/ImgResponsive_Placeholder.png";
+ 
 }
 	
 function getCategoryNQuestions(){
@@ -244,7 +249,7 @@ Array.prototype.contains = function(obj) {
          
                    
         </div><!-- categoryList-->
-      <div class="col-lg-5">
+      <div class="col-lg-5" id="mainContainer"style="visibility: hidden">
              <div class="row" style="border: 1px solid black">
                <div class="col-lg-9">
                  <h3 id="name">Category Name:</h3>
@@ -283,7 +288,7 @@ Array.prototype.contains = function(obj) {
            </div><!-- options and text -->           
       </div>
     </div><!-- main-->
-      <div class="col-lg-4">
+      <div class="col-lg-4" style="visibility: hidden" id="imagesContainer">
             <div class="row">
               <div class="col-lg-6"></div>
               <div class="col-lg-6"></div>
@@ -306,7 +311,7 @@ Array.prototype.contains = function(obj) {
       </div>
 	</div>
 	</div>
-	</div>
+	</div><!-- container end --> 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 	<script src="js/jquery-1.11.3.min.js"></script>
 
