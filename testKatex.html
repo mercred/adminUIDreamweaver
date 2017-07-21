@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untitled Document</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+
+<div class="container" id="mainContainer">
+ 
+</div>
+
+<script>
+	var text="This is from one of the categories, example formula <link>www.google.com</link> is <latex>c = \\pm\\sqrt{a^2 + b^2}</latex>. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus laoreet nulla, at imperdiet nisl finibus nec. Proin in porttitor tellus. Praesent in risus euismod, laoreet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod. Pellentesque ultrices. Final link: <link href="www.google.com">displayedName</link>  <image>img1</image>";
+	var textWithoutTags="eet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod.";
+	var parentID="mainContainer";
+	//text=textWithoutTags;
+	var patt = new RegExp("<link href=>(.*?)</link>|<image>(.*?)</image>|<latex>(.*?)</latex>");    
+	var res = patt.exec(text);
+	//index
+	//
+	
+	
+	
+	
+	
+	
+	if(res==null){ 
+		//there might be more simple text
+		if(text!=''){
+			//generate and insert p with remaining text
+			insertText(text,parentID);
+		}
+		//return here in the end
+	}
+	
+	console.log(res);
+	
+	
+	
+	
+	
+	function insertText(text,parentElementID){
+		var rowDiv = document.createElement("div");
+		rowDiv.className="row";
+		var colDiv=document.createElement("div");
+		rowDiv.className="col-lg-12";		
+		colDiv.appendChild(document.createTextNode(text));	
+		rowDiv.appendChild(colDiv);	
+		document.getElementById(parentElementID).appendChild(rowDiv);		
+	}
+	
+	function insertImage(imageURL,parentElementID){
+		var rowDiv = document.createElement("div");
+		rowDiv.className="row";
+		var colDiv=document.createElement("div");
+		rowDiv.className="col-lg-12";
+		
+		var image = document.createElement("img");
+		image.src=imageURL;
+		image.className="img-responsive";
+		image.alt="Placeholder image";		
+		
+		colDiv.appendChild(image);	
+		rowDiv.appendChild(colDiv);	
+		document.getElementById(parentElementID).appendChild(rowDiv);		
+	}
+	function insertLink(link,linkText,parentElementID){
+		var rowDiv = document.createElement("div");
+		rowDiv.className="row";
+		var colDiv=document.createElement("div");
+		rowDiv.className="col-lg-12";
+		
+		var a = document.createElement('a');		
+		a.setAttribute('href',link);
+		a.innerHTML = linkText;	
+				
+		
+		colDiv.appendChild(a);	
+		rowDiv.appendChild(colDiv);	
+		document.getElementById(parentElementID).appendChild(rowDiv);		
+	}
+	
+	function insertLatex(text,parentElementID){
+		var rowDiv = document.createElement("div");
+		rowDiv.className="row";
+		var colDiv=document.createElement("div");
+		rowDiv.className="col-lg-12";	
+	    katex.render(text, colDiv);			
+		rowDiv.appendChild(colDiv);	
+		document.getElementById(parentElementID).appendChild(rowDiv);		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>
+</body>
+</html>

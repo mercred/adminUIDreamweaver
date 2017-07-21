@@ -124,15 +124,18 @@ function getCategoryBackgroundMaterialDB(){
   		 document.getElementById("textarea").value=currentCategoryBGText;		 
       });	  		 
 }	 
-	
-	
 
-	
-	
-	
-	
-	
-	
+function saveBMChanges(){
+ var bmText = document.getElementById("textarea").value;
+ updateCategoryMaterialDB(currentCategory,bmText);
+ currentCategoryBGText=bmText; 
+}
+function discardBMChanges(){
+document.getElementById("textarea").value=currentCategoryBGText;
+}
+function updateCategoryMaterialDB(categoryName,material){
+  firebase.database().ref('questions').child(categoryName).child('material').child('text').set(material);  
+}		
 var currentImageKey;
 function getListOfBGImagesAndDisplayDB(){
 var allImagesQuery= firebase.database().ref("questions/"+currentCategory+"/material/imgs");
@@ -169,6 +172,7 @@ function displayImageBG(imageVal){
 	downloadAndDisplayImage(imageVal,"bgImageId");		
 }	
 
+	var uploadLock=false;
 //downloads image with name ImageStorageName and loads into img with id ImageHTML
 function downloadAndDisplayImage(ImageName,ImageHTML){
 	console.log(bgImageList);
@@ -195,10 +199,13 @@ function uploadImagesBG(files){
   uploadFilesDB(files,"questions/"+currentCategory+"/material/imgs");
 }
 function uploadFilesDB(files,reference){
-  firebase.storage().ref().putFiles(files,reference).then(function(metadatas) {    
-   alert("Uploaded!");
-   getListOfBGImagesAndDisplayDB();
 	
+	
+ 
+
+ firebase.storage().ref().putFiles(files,reference).then(function(metadatas) { 
+ 	  alert("Uploaded!");	
+      getListOfBGImagesAndDisplayDB();	
   }).catch(function(error) {
     // If any task fails, handle this
   });
@@ -233,7 +240,7 @@ function returnImageName(existingArray,name){
 
 	
 function deleteCurrentImageBG(){
-  if(currentImageKey==null||currentImageKey==''){alert("Please select image from the list below.");}
+  if(currentImageKey==null||currentImageKey==''){alert("Please select image from the list below.");return;}
   var desertRef = firebase.storage().ref(bgImageList[currentImageKey]);
 
       // Delete the file
@@ -276,7 +283,8 @@ Array.prototype.contains = function(obj) {
 		<![endif]-->
   </head>
   <body onLoad="loadCategories()">
-	<div class="container" style="width: 90%">
+ 
+	<div class="container" id="overlay" style="width: 90%">
       <header class="row">
         <div class="col-lg-12">
           <h1>Admin Firebase UI</h1>
@@ -316,17 +324,17 @@ Array.prototype.contains = function(obj) {
          
                    
         </div><!-- categoryList-->
-      <div class="col-lg-5" id="mainContainer"style="visibility: hidden">
+      <div class="col-lg-5" id="mainContainer" style="visibility: hidden">
              <div class="row" style="border: 1px solid black">
-               <div class="col-lg-9">
+               <div class="col-lg-8">
                  <h3 id="name">Category Name:</h3>
                  <h5 id="nQuestions">Number of questions:</h5>
                </div>
-               <div class="col-lg-3">                 
-                 <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                   <button type="button" class="btn btn-danger" onClick="deleteCurrentCategory()">Delete Category</button>
-                   <button type="button" class="btn btn-primary">Show Questions</button>  
-                   <button type="button" class="btn btn-info">Show Preview</button>                   
+               <div class="col-lg-4">                 
+                 <div class="btn-group-vertical" style="width: 100%" role="group" aria-label="Vertical button group">
+                   <button type="button" class="btn btn-danger"  onClick="deleteCurrentCategory()">Delete current</button>
+                   <button type="button" class="btn btn-primary">Questions</button>  
+                   <button type="button" class="btn btn-info">Preview</button>                   
                  </div>
                </div>
              </div>
@@ -342,10 +350,10 @@ Array.prototype.contains = function(obj) {
               <div class="col-lg-4">                
                </div>
                <div class="col-lg-4">
-                 <button type="button" class="btn btn-success">Save changes</button>
+                 <button type="button" class="btn btn-success" onClick="saveBMChanges()">Save changes</button>
                </div>
                <div class="col-lg-4">
-                 <button type="button" class="btn btn-danger">Discard changes</button>
+                 <button type="button" class="btn btn-danger" onClick="discardBMChanges()">Discard changes</button>
                </div>
              </div>
                </div>
@@ -354,14 +362,15 @@ Array.prototype.contains = function(obj) {
              
            </div><!-- options and text -->           
       </div>
-    </div><!-- main-->
+      </div><!-- main-->
       <div class="col-lg-4" style="visibility: hidden" id="imagesContainer">
             <div class="row">
               <div class="col-lg-6">
-              	<input type="file" multiple onchange="uploadImagesBG(this.files)" id="inputFile" accept=".png">              	
+              	<input type="file" multiple onchange="uploadImagesBG(this.files)" id="inputFile" accept=".png" style="display: none"> 
+              	<input type="button" style="width: 100%" class="btn btn-default" value="Upload" onclick="document.getElementById('inputFile').click();" />             	
               </div>
               <div class="col-lg-6">
-              	<button type="button" onClick="deleteCurrentImageBG()" id="deleteBGImageButton" class="btn btn-info">Delete Current Image</button>              	
+              	<button type="button" onClick="deleteCurrentImageBG()" id="deleteBGImageButton" class="btn btn-default">Delete Current Image</button>              	
               </div>
             </div>
             <div class="row">
@@ -388,5 +397,6 @@ Array.prototype.contains = function(obj) {
 
 	<!-- Include all compiled plugins (below), or include individual files as needed --> 
 	<script src="js/bootstrap.js"></script>
+	
   </body>
 </html>
