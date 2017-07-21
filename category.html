@@ -133,28 +133,27 @@ function getCategoryBackgroundMaterialDB(){
 	
 	
 	
-	
+var currentImageKey;
 function getListOfBGImagesAndDisplayDB(){
 var allImagesQuery= firebase.database().ref("questions/"+currentCategory+"/material/imgs");
 allImagesQuery.once("value").then(
       function(snapshot) {
-	  	 
+	  currentImageKey=null;
 	  var html_list = document.getElementById("bg_images_list");
       while (html_list.firstChild) {
         html_list.removeChild(html_list.firstChild);
       }	
-      bgImageList=[];
-      snapshot.forEach(function(childSnapshot) {           	 
-          bgImageList.push[childSnapshot.key];
-		  
-		  
-		  var valueBG=childSnapshot.val(); console.log(valueBG);
+	  html_list.src="images/ImgResponsive_Placeholder.png";	  
+      bgImageList={};
+      snapshot.forEach(function(childSnapshot) {  
+		  var valueBGImage=childSnapshot.val();
+          bgImageList[childSnapshot.key]=valueBGImage;
 		  var entry = document.createElement('li');		
 	entry.addEventListener('click', (function(imageVal) {
 			return function() {
 					displayImageBG(imageVal);
 				}
-		})(valueBG));
+		})(childSnapshot.key));
 	var a = document.createElement('a');  						 
 	a.appendChild(document.createTextNode(childSnapshot.key));	
 	a.href = "#";							
@@ -169,17 +168,85 @@ allImagesQuery.once("value").then(
 function displayImageBG(imageVal){		
 	downloadAndDisplayImage(imageVal,"bgImageId");		
 }	
+
 //downloads image with name ImageStorageName and loads into img with id ImageHTML
-function downloadAndDisplayImage(ImageStorageName,ImageHTML){
+function downloadAndDisplayImage(ImageName,ImageHTML){
+	console.log(bgImageList);
+	     var ImageStorageName=bgImageList[ImageName];
 		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
-			 console.log("url:"+url);
-           var img = document.getElementById(ImageHTML);
+		   var img = document.getElementById(ImageHTML);
            img.src = url;
+		   currentImageKey=ImageName;
+			 
   		 }).catch(function(error) {
               alert("During downloading of background material images following error occured: "+error);
            });
-}	
+}
+function uploadImagesBG(files){
+
+ for(var i=0; i<files.length;i++){
+  		  var file = files[i];		  
+		  if(file.type!="image/png"){
+    		  alert("File "+ file +" is not png!");
+    		  return;
+		  }  
+  }    
+  uploadFilesDB(files,"questions/"+currentCategory+"/material/imgs");
+}
+function uploadFilesDB(files,reference){
+  firebase.storage().ref().putFiles(files,reference).then(function(metadatas) {    
+   alert("Uploaded!");
+   getListOfBGImagesAndDisplayDB();
+	
+  }).catch(function(error) {
+    // If any task fails, handle this
+  });
+}
+
+firebase.storage().ref().constructor.prototype.putFiles = function(files,reference) 
+
+{ 
+  var ref = this;
+  const filesArr = [...files];
+  return Promise.all(filesArr.map(function(file) {
+    var id=uniqueID();	
+	initialName=file.name.substring(0, file.name.length - 4);
+	  
+	var name=returnImageName(Object.keys(bgImageList),initialName);		
+    firebase.database().ref(reference).child(name).set(id);	 
+    return ref.child(id).put(file);
+  }));
+}
+
+function returnImageName(existingArray,name){
+   var currentName;
+   var counter=0;		 
+   while(true){
+       currentName="img"+counter+name;
+       if(existingArray.contains(currentName)==false){
+	   	    return currentName;       
+       }
+	   counter=counter+1; 
+   }
+}
+
+	
+function deleteCurrentImageBG(){
+  if(currentImageKey==null||currentImageKey==''){alert("Please select image from the list below.");}
+  var desertRef = firebase.storage().ref(bgImageList[currentImageKey]);
+
+      // Delete the file
+      desertRef.delete().then(function() {
+        firebase.database().ref('questions').child(currentCategory).child("material").child("imgs").child(currentImageKey).set(null);
+		document.getElementById("bgImageId").src="images/ImgResponsive_Placeholder.png";
+		currentImageKey=null;
+		getListOfBGImagesAndDisplayDB();		
+      }).catch(function(error) {
+        alert("Error occured during file deletion: "+ error);
+      });  
+}
+	
 function uniqueID(){
   function chr4(){
     return Math.random().toString(16).slice(-4);
@@ -290,12 +357,16 @@ Array.prototype.contains = function(obj) {
     </div><!-- main-->
       <div class="col-lg-4" style="visibility: hidden" id="imagesContainer">
             <div class="row">
-              <div class="col-lg-6"></div>
-              <div class="col-lg-6"></div>
+              <div class="col-lg-6">
+              	<input type="file" multiple onchange="uploadImagesBG(this.files)" id="inputFile" accept=".png">              	
+              </div>
+              <div class="col-lg-6">
+              	<button type="button" onClick="deleteCurrentImageBG()" id="deleteBGImageButton" class="btn btn-info">Delete Current Image</button>              	
+              </div>
             </div>
             <div class="row">
               <div class="col-lg-12" ><img id="bgImageId" src="images/ImgResponsive_Placeholder.png" class="img-responsive" alt="Placeholder image"></div>         
-                            
+            </div>
               <div class="row">
                 <div class="col-lg-12">
                  <label>List of Images:</label>
@@ -306,12 +377,12 @@ Array.prototype.contains = function(obj) {
               
               
               
-            </div>
+            
           </div><!-- images--> 
       </div>
 	</div>
 	</div>
-	</div><!-- container end --> 
+	<!-- container end --> 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 	<script src="js/jquery-1.11.3.min.js"></script>
 
