@@ -32,7 +32,7 @@ firebase.initializeApp(config);
 				return;
 			}
 			
-			var result_list = document.getElementById("result_list");			
+			var result_list = document.getElementById("questions_list");			
 			
 			while (result_list.firstChild) {
 				result_list.removeChild(result_list.firstChild);
@@ -78,7 +78,7 @@ firebase.initializeApp(config);
 				entry.setAttribute("id","noMatchNode");
 				result_list.appendChild(entry);
 			}	
-			var mainList=document.getElementById("result_list").style.visibility="visible";			
+			var mainList=document.getElementById("questions_list").style.visibility="visible";			
 			});		//listener end					
 		}//function getQueryResults() end 
 	
@@ -136,14 +136,13 @@ firebase.initializeApp(config);
         </div>
       </div>
       <div class="row" id="result_row" style="visibility: hidden">
-        <div class="col-xs-6">
-          <div class="col-lg-2" id="questions" style="visibility:hidden">
-         		<h4 id="nQuestions">Number of questions:</h4>
+        <div class="col-xs-4">
+                   		<h4 id="nQuestions">Number of questions:</h4>
           		<ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="questions_list"> </ul>
-          </div>
+          
         </div>
-        <div class="col-xs-6" id="result_text_div" style="border: 2px solid black;visibility: hidden">
-          <p id="result_text"></p>          
+        <div class="col-xs-8" id="result_text_div" style="border: 2px solid black;visibility: hidden">
+          <p id="result_text" style="width: 100%"></p>          
           <a href="#" id="displayQuestionButton" class="btn btn-primary">OPEN</a>
         </div>
       </div>

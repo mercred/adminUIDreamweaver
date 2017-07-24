@@ -7,7 +7,9 @@
 <title>Untitled Document</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="css/custom.css" rel="stylesheet" type="text/css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -17,13 +19,35 @@
 </head>
 
 <body>
-
+<div id="mask"></div>
+<div id="popup">    
+    Uploading, please wait...    
+</div>
 <div class="container" id="mainContainer">
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
+
+
  
 </div>
 
 <script>
-	var text="This is from one of the categories, example formula <link>www.google.com</link> is <latex>c = \\pm\\sqrt{a^2 + b^2}</latex>. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus laoreet nulla, at imperdiet nisl finibus nec. Proin in porttitor tellus. Praesent in risus euismod, laoreet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod. Pellentesque ultrices. Final link: <link href="www.google.com">displayedName</link>  <image>img1</image>";
+	
+	showPopup();
+	function showPopup() {
+    // show the mask
+    $("#mask").fadeTo(500, 0.25);
+
+    // show the popup
+    $("#popup").show();
+}
+	
+	$("#popup").click(function() {
+
+        $(this).hide();
+        $("#mask").hide();
+
+    });	
+	var text="This is from one of the categories, example formula <link>www.google.com</link> is <latex>c = \\pm\\sqrt{a^2 + b^2}</latex>. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus laoreet nulla, at imperdiet nisl finibus nec. Proin in porttitor tellus. Praesent in risus euismod, laoreet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod. Pellentesque ultrices. Final link: <link href='google.com'>displayedName</link> <image>img1</image>";
 	var textWithoutTags="eet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod.";
 	var parentID="mainContainer";
 	//text=textWithoutTags;
@@ -31,11 +55,7 @@
 	var res = patt.exec(text);
 	//index
 	//
-	
-	
-	
-	
-	
+	typeof myVar !== 'undefined'
 	
 	if(res==null){ 
 		//there might be more simple text
@@ -47,10 +67,6 @@
 	}
 	
 	console.log(res);
-	
-	
-	
-	
 	
 	function insertText(text,parentElementID){
 		var rowDiv = document.createElement("div");
@@ -101,16 +117,8 @@
 	    katex.render(text, colDiv);			
 		rowDiv.appendChild(colDiv);	
 		document.getElementById(parentElementID).appendChild(rowDiv);		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 </script>
+<script src="js/jquery-1.11.3.min.js"></script>
 </body>
 </html>
