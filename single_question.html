@@ -4,9 +4,10 @@
     <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Untitled Document</title>
+    <title>Single question</title>
     <!-- Bootstrap -->
 	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/custom.css" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -31,79 +32,40 @@
         </div>
       </div>
       <div class="row">
-    <div class="col-lg-12">
-      <p>Single Question page</p>
-    </div>
+		<div class="col-lg-12">		
+		
+		<div class="fluidMedia">
+    		<iframe frameborder="0" id="questionFragmentIFrameId"> </iframe>
+		</div>
+		
+		
+		
+		
+		  
+		</div>
       </div>
 	</div>
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 	<script src="js/jquery-1.11.3.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>  
-<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
  <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"></script>
-
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>	
+ <script src="js/utility.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed --> 
 	<script src="js/bootstrap.js"></script>
+	
 	<script> 
 	  function myFunction(){ 
+		  //questionFragment.html#category=Force&question=question1
 		  var url = window.location.href;	   
 		  var category=getParameter(url,"category");
-		  var question=getParameter(url,"question")
-		  var config = {
-			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
-			  databaseURL: "https://studymechanics.firebaseio.com"      
-		  };
-			function isEmpty(obj) {
-			return Object.keys(obj).length === 0;
-		}
-			firebase.initializeApp(config);
-		  var oneQuestionQuery= firebase.database().ref("questions").child(category).child("questions").child(question).orderByKey();
-  oneQuestionQuery.once("value").then(
-        function(snapshot) {   	  	   
-        	snapshot.forEach(function(childSnapshot) {
-              key=childSnapshot.key;			  
-			  if(key=="answers"){
-			     childSnapshot.forEach(function(answerSnapshot){
-				      console.log("Creating row for"+answerSnapshot.key);
-					  createAnswerRow(answerSnapshot.key,"questionContainer");
-					  var answer=answerSnapshot.val();
-					  console.log(answer);
-					  document.getElementById("textarea"+answerSnapshot.key).innerHTML=answer["text"];
-					  downloadAndDisplayImage(answer["img"],"image"+answerSnapshot.key);					 					  		    
-				 });//childSnapshot.forEach end	
-				 createHugeButton("questionContainer");   
-			  } else{
-    			  if(key=="img"){
-    			   //load image				   
-				   downloadAndDisplayImage(childSnapshot.val(),"questionImg");				   
-				   
-    			  } else{
-    			  	if(key=="text")  document.getElementById("questionText").innerHTML=childSnapshot.val();
-    			  }
-			  }
-    			
-    	    });  						
-         }
-    );//end of oneQuestionQuery.once("value").then 
-	 
-	  
-		  
-		  
-		  
-		  
-		  
-		  	
-		  
+		  console.log("Sing.q.cat "+category);
+		  var question=getParameter(url,"question");		 
+          $('#questionFragmentIFrameId').attr('src', "questionFragment.html#category="+category+"&question="+question);		  
 	  }//end of function myFunction()
-		function getParameter(url,name){
-		var pattern=  RegExp(name+'=([^&]+)', 'i')
-		var captured = pattern.exec(url)[1];
-    //var captured = /category=([^&]+)/.exec(url)[1]; // Value is in [1] ('384' in our case)
-    var result = captured ? captured : 'notFound';
-			return result;
-			
-		}
+		
 	  </script>
   </body>
 </html>

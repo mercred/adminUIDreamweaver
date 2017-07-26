@@ -8,6 +8,7 @@ var config = {
 
 
 
+
 firebase.initializeApp(config);
 firebase.storage().ref().constructor.prototype.putFiles = function(files,reference) 
 		{ 
@@ -187,21 +188,7 @@ function displayImageBG(imageVal){
 	downloadAndDisplayImage(imageVal,"bgImageId");		
 }	
 
-	var uploadLock=false;
-//downloads image with name ImageStorageName and loads into img with id ImageHTML
-function downloadAndDisplayImage(ImageName,ImageHTML){
-	
-	     var ImageStorageName=bgImageList[ImageName];
-		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
-    		 // url is the download URL for our image
-		   var img = document.getElementById(ImageHTML);
-           img.src = url;
-		   currentImageKey=ImageName;
-			 
-  		 }).catch(function(error) {
-              alert("During downloading of background material images following error occured: "+error);
-           });
-}
+
 function uploadImagesBG(files){
 
  for(var i=0; i<files.length;i++){
@@ -214,31 +201,16 @@ function uploadImagesBG(files){
   uploadFilesDB(files,"questions/"+currentCategory+"/material/imgs");
 }
 function uploadFilesDB(files,reference){
-	
-	
- showPopup();
-
- firebase.storage().ref().putFiles(files,reference).then(function(metadatas) { 
- 	  	
-      getListOfBGImagesAndDisplayDB();	
-  }).catch(function(error) {
-    // If any task fails, handle this
-  });
+		
+	 showPopup();
+	 firebase.storage().ref().putFiles(files,reference).then(function(metadatas) { 
+		  getListOfBGImagesAndDisplayDB();	
+	  }).catch(function(error) {
+		// If any task fails, handle this
+	  });
 }
 
 
-
-function returnImageName(existingArray,name){
-   var currentName;
-   var counter=0;		 
-   while(true){
-       currentName="img"+counter+name;
-       if(existingArray.contains(currentName)==false){
-	   	    return currentName;       
-       }
-	   counter=counter+1; 
-   }
-}
 
 	
 function deleteCurrentImageBG(){
@@ -256,16 +228,7 @@ function deleteCurrentImageBG(){
       });  
 }
 	
-function uniqueID(){
-  function chr4(){
-    return Math.random().toString(16).slice(-4);
-  }
-  return chr4() + chr4() +
-    '-' + chr4() +
-    '-' + chr4() +
-    '-' + chr4() +
-    '-' + chr4() + chr4() + chr4();
-}
+
 Array.prototype.contains = function(obj) {
     var i = this.length;
     while (i--) {
