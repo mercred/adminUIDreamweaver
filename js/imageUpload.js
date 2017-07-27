@@ -4,7 +4,7 @@
 function downloadAndDisplayImage(ImageName,ImageHTML){
 	
 	     var ImageStorageName=bgImageList[ImageName];
-		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
+		 firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   var img = document.getElementById(ImageHTML);
            img.src = url;
@@ -17,11 +17,11 @@ function downloadAndDisplayImage(ImageName,ImageHTML){
 function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 	
 	     var ImageStorageName=ImageName;
-		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
+		 firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   var img = document.getElementById(ImageHTML);
            img.src = url;
-		   currentImageKey=ImageName;
+		  //currentImageKey=ImageName;
 			 
   		 }).catch(function(error) {
               alert("During downloading images following error occured: "+error);

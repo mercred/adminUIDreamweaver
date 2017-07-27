@@ -192,7 +192,8 @@ function displayImageBG(imageVal){
 function uploadImagesBG(files){
 
  for(var i=0; i<files.length;i++){
-  		  var file = files[i];		  
+  		  var file = files[i];
+	 console.log(file);
 		  if(file.type!="image/png"){
     		  alert("File "+ file +" is not png!");
     		  return;

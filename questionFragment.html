@@ -55,21 +55,10 @@
 
  <script src="js/utility.js"></script>
  <script src="js/imageUpload.js"></script>
+
  <script>
 	 // <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> 
-
-	 
-	 
-	
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
+ 
   var config = {
       apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
       databaseURL: "https://studymechanics.firebaseio.com" ,	  
@@ -77,37 +66,105 @@
   };
 	
 	firebase.initializeApp(config);
+	 var category;
+	 var question;
 	 
-	function generateQuestion(text,imageURL,containerID){
+	 
+	 function generateCreateButton(containerID){
+		 
+		 
+	 }
+	function generateAnswer(ansUniqName,text,imageName,isCorrect,containerID){
+		
+		var rowDiv = document.createElement("div");	rowDiv.className="row";
+		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-7";
+		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";
+		var colDiv3=document.createElement("div");	colDiv2.className="col-lg-1";
+		
+		var inputText=document.createElement("textarea");
+			inputText.setAttribute("id",ansUniqName+"text");
+			inputText.value=text;
+		    inputText.style.resize="none";
+		    inputText.style.width="100%";			
+		colDiv1.appendChild(inputText);
+		var saveTxtButton=document.createElement("button");
+			saveTxtButton.class="btn btn-default";
+			saveTxtButton.innerHTML="Save";
+			saveTxtButton.type="button";
+			saveTxtButton.addEventListener('click', (function(UniqName) {
+			return function() {
+					saveAnswerText(UniqName);
+				}
+		})(ansUniqName));	
+		colDiv1.appendChild(saveTxtButton);
+		rowDiv.appendChild(colDiv1);
+		
+		var rowDiv41 = document.createElement("div");	rowDiv41.className="row"; 
+		//add 2 columns and 2 buttons to rowDiv41
+		
+		
+		/*<input type="file" multiple onchange="uploadImagesBG(this.files)" id="inputFile" accept=".png" style="display: none"> 
+              	<input type="button" style="width: 100%" class="btn btn-default" value="Upload" onclick="document.getElementById('inputFile').click();" /> */ 
+		
+		
+		var colDiv411=document.createElement("div");	colDiv411.className="col-lg-6";		
+		
+		var uploadDialog=document.createElement("input");
+		uploadDialog.type="file";
+		uploadDialog.setAttribute("accept",".png");
+		//uploadDialog.style.display="none";			
+		uploadDialog.addEventListener('change', (function(UniqName) {
+			return function() {
+					var file=uploadDialog.files[0];				
+					console.log(file);
+					console.log(UniqName);
+				}
+		})(ansUniqName));		
+
+	  colDiv411.appendChild(uploadDialog);
 		
 		
 		
 		
 		
 		
-  /*
-    <div class="col-lg-4">
-      <div class="row">
-        <div class="col-lg-6">
-         <button type="button"  class="btn btn-default">Upload</button> 
-          </div>
-        <div class="col-lg-6">
-        <button type="button"  class="btn btn-default">Delete Current Image</button> 
-        </div>
-      </div>
-      <div class="row">
-		  
-		  
-		  <div class="col-lg-10">
-        <img src="images/ImgResponsive_Placeholder.png" class="img-responsive" alt="Placeholder image"> 
-        </div>
-		   <div class="col-lg-2">
-        <button type="button"  class="btn btn-default">Delete Current Image</button> 
-        </div> 
-       
-      </div>
-    </div>
-  
+		/*
+		
+		
+		
+		
+				var uploadButton=document.createElement("button");
+					saveTxtButton.class="btn btn-default";
+					saveTxtButton.innerHTML="Upload";
+					saveTxtButton.type="button";
+					saveTxtButton.addEventListener('click', (function(UniqName) {
+					return function() {
+						downloadAndDisplayImageDirectly(UniqName,UniqName+"image");							
+						}
+				})(ansUniqName));	
+				colDiv411.appendChild(uploadButton);
+		
+		
+		
+		
+		
+		
+		
+		
+				var colDiv412=document.createElement("div");	colDiv412.className="col-lg-6";
+				var deleteButton=document.createElement("button");
+							saveTxtButton.class="btn btn-default";
+							saveTxtButton.innerHTML="Delete Current Image";
+							saveTxtButton.type="button";
+							saveTxtButton.addEventListener('click', (function(UniqName) {
+							return function() {
+									saveAnswerText(UniqName);
+								}
+						})(ansUniqName));	
+						colDiv411.appendChild(uploadButton);
+		
+		
+		
 		*/
 		
 		
@@ -116,84 +173,61 @@
 		
 		
 		
-		var rowDiv = document.createElement("div");	rowDiv.className="row";
-		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-8";
-		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";
-		colDiv1.appendChild(document.createTextNode(text));		
-		rowDiv.appendChild(colDiv1);
-		
-		var rowDiv41 = document.createElement("div");	rowDiv41.className="row"; 
-		//add 2 columns and 2 buttons to rowDiv41
-		var colDiv411=document.createElement("div");	colDiv411.className="col-lg-6";
-		
-		var colDiv412=document.createElement("div");	colDiv412.className="col-lg-6";		
-		rowDiv41.appendChild(colDiv411);
-		rowDiv41.appendChild(colDiv412);
-		
-		
-		
-		
+				rowDiv41.appendChild(colDiv411);
+		        //rowDiv41.appendChild(colDiv412);
+		/*
 		var rowDiv42 = document.createElement("div");	rowDiv42.className="row"; 
 		//add image to rowDiv42
-		
-		
+			var image = document.createElement("img");	image.src=imageURL;	image.className="img-responsive";  image.alt="Placeholder image";
+			colDiv.appendChild(image);	
+		*/
 		colDiv2.appendChild(rowDiv41);
-		colDiv2.appendChild(rowDiv42);		
+		//colDiv2.appendChild(rowDiv42);		
 		rowDiv.appendChild(colDiv2);
 		
 		
 		
-		var image = document.createElement("img");	image.src=imageURL;	image.className="img-responsive";  image.alt="Placeholder image";		
+		document.getElementById(containerID).appendChild(rowDiv);
 		
-		colDiv.appendChild(image);	
-		
-			
-		 
 	 }
-	 function generateAnswer(){
-		 
+	 
+	 function saveAnswerText(UniqName){
+		  var answerText = document.getElementById(UniqName+"text").value;		  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(UniqName).child('text').set(answerText);	 
 	 }
 	 
 	function displayQuestion(){
-		
-		
-	 
-		
-		
-		
-	 var category=getParameter(window.location.href ,"category");
-	 var question=getParameter(window.location.href ,"question"); 
-	
-		  var oneQuestionQuery= firebase.database().ref("questions").child(category).child("questions").child(question).orderByKey();
+		category=getParameter(window.location.href ,"category");
+	    question=getParameter(window.location.href ,"question"); 	
+		var oneQuestionQuery= firebase.database().ref("questions").child(category).child("questions").child(question).orderByKey();
   oneQuestionQuery.once("value").then(
         function(snapshot) {   	  
 			var snapObj=snapshot.val();			
-			var answers=snapObj.questions;
 			
 			$( "#qTxtID" ).text("Category:"+category+", question:"+question+".\n"+snapObj.text);
 			downloadAndDisplayImageDirectly(snapObj.img,"qImgID");
-						
-			//generateQuestion(snapObj.text,snapObj.img,"mainContainer");
+						//TODO: add event listeners
 			
-			/*
-        	snapshot.forEach(function(childSnapshot) {
-              key=childSnapshot.key;		  
-			     childSnapshot.forEach(function(answerSnapshot){
-				      console.log("Creating row for"+answerSnapshot.key);
-					  createAnswerRow(answerSnapshot.key,"questionContainer");
-					  var answer=answerSnapshot.val();
-					  console.log(answer);
-					  document.getElementById("textarea"+answerSnapshot.key).innerHTML=answer["text"];
-					  downloadAndDisplayImage(answer["img"],"image"+answerSnapshot.key);					 					  		    });//childSnapshot.forEach end	
-				 createHugeButton("questionContainer");  
-			    			   //load image				   
-				   downloadAndDisplayImage(childSnapshot.val(),"questionImg");
-    			  	if(key=="text")  document.getElementById("questionText").innerHTML=childSnapshot.val();		  
-			  
-				
-				
-    	    });  */						
-         }
+			var containerID="mainContainer";
+			var answers=snapObj.answers;		
+			for (var key in answers) {
+				// skip loop if the property is from prototype
+				if (!answers.hasOwnProperty(key)) continue;
+
+				var obj = answers[key];
+				var properties={};
+				for (var prop in obj) {
+					// skip loop if the property is from prototype
+					if(!obj.hasOwnProperty(prop)) continue;
+
+					//properties are in order: img,isCorrect, text					
+					properties[prop]=obj[prop];					
+				}
+				console.log(containerID);
+				generateAnswer(key,properties["text"],properties["img"],properties["isCorrect"],containerID);
+			}
+			generateCreateButton(containerID);
+		}
+			
     );//end of oneQuestionQuery.once("value").then 
 	 }//end of function displayQuestion()
 	  
