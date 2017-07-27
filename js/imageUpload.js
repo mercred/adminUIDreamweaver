@@ -4,7 +4,7 @@
 function downloadAndDisplayImage(ImageName,ImageHTML){
 	
 	     var ImageStorageName=bgImageList[ImageName];
-		 firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
+		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   var img = document.getElementById(ImageHTML);
            img.src = url;
@@ -21,7 +21,7 @@ function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
     		 // url is the download URL for our image
 		   var img = document.getElementById(ImageHTML);
            img.src = url;
-		  //currentImageKey=ImageName;
+		   //currentImageKey=ImageName;
 			 
   		 }).catch(function(error) {
               alert("During downloading images following error occured: "+error);

@@ -24,10 +24,7 @@
     <div class="row"><textarea id="qTxtID" style="width:100%;resize: none;"></textarea></div>
     <div class="row">
     	<button type="button" class="btn btn-default" style="width: 100%">Save</button> 
-    </div>
-    
-    
-    
+    </div>   
     		
     </div>
     <div class="col-lg-4">
@@ -68,24 +65,128 @@
 	firebase.initializeApp(config);
 	 var category;
 	 var question;
-	 
+	 var answerToImage={};
 	 
 	 function generateCreateButton(containerID){
 		 
 		 
 	 }
+	 
+	 
+	 
+	 function deleteAnswerImage(answerName){		
+		 
+		 
+		 
+		 
+		 
+		 
+		 var desertRef = firebase.storage().ref(answerToImage[answerName]);
+
+      // Delete the file
+      desertRef.delete().then(function() {
+		 firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(null);
+		  
+      }).catch(function(error) {
+        alert("Error occured during file deletion: "+ error);
+      }); 
+		 
+	 }
+	 
+	 
+	 function generateAnswerClean(ansUniqName,text,imageName,isCorrect,containerID){
+		var rowDiv = document.createElement("div");	rowDiv.className="row"; rowDiv.style.border="2px solid black";
+		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-7";
+		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";
+		var colDiv3=document.createElement("div");	colDiv3.className="col-lg-1";
+		 
+		var rowDiv11 = document.createElement("div"); rowDiv11.className="row";rowDiv11.style.backgroundColor="black";
+		 var textArea = document.createElement("textarea");	textArea.style.resize="none";
+		 textArea.style.width="100%";
+		 textArea.value="ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus";
+		 rowDiv11.appendChild(textArea);
+		 colDiv1.appendChild(rowDiv11);
+		 
+		 var rowDiv12 = document.createElement("div"); rowDiv12.className="row";rowDiv11.style.backgroundColor="orange";
+		 var saveButton = document.createElement("button");
+		 saveButton.className ="btn btn-default";
+		 saveButton.style.width="100%";
+		 saveButton.innerHTML="Save";
+		 rowDiv12.appendChild(saveButton);		 
+		 colDiv1.appendChild(rowDiv12);
+		 
+		 rowDiv.appendChild(colDiv1);
+		 
+		 
+		 var rowDiv21 = document.createElement("div"); rowDiv21.className="row";
+		
+		 
+		 var colDivUpload=document.createElement("div");colDivUpload.className="col-lg-6";
+		 colDivUpload.style.backgroundColor="yellow";
+		 var UploadButton = document.createElement("button");
+		 UploadButton.className="btn btn-default";
+		 UploadButton.style.width="100%";
+		 UploadButton.innerHTML="Upload";
+		 colDivUpload.appendChild(UploadButton);
+		 rowDiv21.appendChild(colDivUpload);
+		 
+		 
+		 
+		 var colDivDelete=document.createElement("div");	colDivDelete.className="col-lg-6";
+		 colDivDelete.style.backgroundColor="orange";
+		 var DeleteButton = document.createElement("button");
+		 DeleteButton.className="btn btn-default";
+		 DeleteButton.style.width="100%";
+		 DeleteButton.innerHTML="Delete Current Image";
+		 colDivDelete.appendChild(DeleteButton);
+		 rowDiv21.appendChild(colDivDelete);		 
+		 colDiv2.appendChild(rowDiv21);
+		 
+		 
+		 var rowDiv22 = document.createElement("div"); rowDiv22.className="row";
+		 rowDiv22.style.backgroundColor="red";	
+		 var colDivImage=document.createElement("div");	colDivImage.className="col-lg-12";
+		  var mainImage = document.createElement("img");
+		 mainImage.src="images/ImgResponsive_Placeholder.png";
+		 mainImage.className="img-responsive";
+		 colDivImage.appendChild(mainImage);
+		 rowDiv22.appendChild(colDivImage);
+		 colDiv2.appendChild(rowDiv22);		 
+		rowDiv.appendChild(colDiv2);
+		 
+		 
+		rowDiv.appendChild(colDiv3);
+		document.getElementById(containerID).appendChild(rowDiv);
+		 
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 	function generateAnswer(ansUniqName,text,imageName,isCorrect,containerID){
 		
 		var rowDiv = document.createElement("div");	rowDiv.className="row";
-		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-7";
-		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";
+		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-6";
+		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-5";
 		var colDiv3=document.createElement("div");	colDiv2.className="col-lg-1";
 		
 		var inputText=document.createElement("textarea");
 			inputText.setAttribute("id",ansUniqName+"text");
 			inputText.value=text;
 		    inputText.style.resize="none";
-		    inputText.style.width="100%";			
+		    inputText.style.width="100%";		    
 		colDiv1.appendChild(inputText);
 		var saveTxtButton=document.createElement("button");
 			saveTxtButton.class="btn btn-default";
@@ -97,7 +198,7 @@
 				}
 		})(ansUniqName));	
 		colDiv1.appendChild(saveTxtButton);
-		rowDiv.appendChild(colDiv1);
+		
 		
 		var rowDiv41 = document.createElement("div");	rowDiv41.className="row"; 
 		//add 2 columns and 2 buttons to rowDiv41
@@ -107,88 +208,75 @@
               	<input type="button" style="width: 100%" class="btn btn-default" value="Upload" onclick="document.getElementById('inputFile').click();" /> */ 
 		
 		
-		var colDiv411=document.createElement("div");	colDiv411.className="col-lg-6";		
-		
+		var colDiv411=document.createElement("div");	colDiv411.className="col-lg-6";
 		var uploadDialog=document.createElement("input");
 		uploadDialog.type="file";
 		uploadDialog.setAttribute("accept",".png");
 		//uploadDialog.style.display="none";			
 		uploadDialog.addEventListener('change', (function(UniqName) {
 			return function() {
-					var file=uploadDialog.files[0];				
+					var file=uploadDialog.files[0];
+				//change answerToImage
 					console.log(file);
 					console.log(UniqName);
 				}
-		})(ansUniqName));		
-
-	  colDiv411.appendChild(uploadDialog);
+		})(ansUniqName));
+		colDiv411.appendChild(uploadDialog);
 		
+	   var colDiv412=document.createElement("div");	colDiv412.className="col-lg-6";
+	   var deleteButton=document.createElement("button");
+		saveTxtButton.class="btn btn-default";
+		saveTxtButton.innerHTML="Delete Current Image";
+		saveTxtButton.type="button";
+		saveTxtButton.addEventListener('click', (function(UniqName) {
+		return function() {
+				deleteAnswerImage(UniqName);
+			    document.getElementById(ansUniqName+"image").src="images/ImgResponsive_Placeholder.png";
+			
+				}
+		})(ansUniqName));	
+		colDiv412.appendChild(deleteButton);
 		
+		rowDiv41.appendChild(colDiv411);
+		rowDiv41.appendChild(colDiv412);
 		
-		
-		
-		
-		/*
-		
-		
-		
-		
-				var uploadButton=document.createElement("button");
-					saveTxtButton.class="btn btn-default";
-					saveTxtButton.innerHTML="Upload";
-					saveTxtButton.type="button";
-					saveTxtButton.addEventListener('click', (function(UniqName) {
-					return function() {
-						downloadAndDisplayImageDirectly(UniqName,UniqName+"image");							
-						}
-				})(ansUniqName));	
-				colDiv411.appendChild(uploadButton);
-		
-		
-		
-		
-		
-		
-		
-		
-				var colDiv412=document.createElement("div");	colDiv412.className="col-lg-6";
-				var deleteButton=document.createElement("button");
-							saveTxtButton.class="btn btn-default";
-							saveTxtButton.innerHTML="Delete Current Image";
-							saveTxtButton.type="button";
-							saveTxtButton.addEventListener('click', (function(UniqName) {
-							return function() {
-									saveAnswerText(UniqName);
-								}
-						})(ansUniqName));	
-						colDiv411.appendChild(uploadButton);
-		
-		
-		
-		*/
-		
-		
-		
-		
-		
-		
-		
-				rowDiv41.appendChild(colDiv411);
-		        //rowDiv41.appendChild(colDiv412);
-		/*
 		var rowDiv42 = document.createElement("div");	rowDiv42.className="row"; 
-		//add image to rowDiv42
-			var image = document.createElement("img");	image.src=imageURL;	image.className="img-responsive";  image.alt="Placeholder image";
-			colDiv.appendChild(image);	
-		*/
+			//add image to rowDiv42
+		
+		 var colDiv421=document.createElement("div");	colDiv421.className="col-lg-12";
+		
+			var image = document.createElement("img");
+				image.id=ansUniqName+"image"; 
+				image.className="img-responsive"; 
+				image.alt="Placeholder image";
+			colDiv421.appendChild(image);
+		rowDiv42.appendChild(colDiv421);
 		colDiv2.appendChild(rowDiv41);
-		//colDiv2.appendChild(rowDiv42);		
+		colDiv2.appendChild(rowDiv42);
+		
+		/*
+		<div class="row">
+              <div class="col-lg-12" ><img id="bgImageId" src="images/ImgResponsive_Placeholder.png" class="img-responsive" alt="Placeholder image"></div>         
+            </div>
+		*/
+		
+		var rowIsCorrect=document.createElement("div");	rowIsCorrect.className="row";
+		var colIsCorrect=document.createElement("div");	colIsCorrect.className="col-lg-12";	
+		//radio button goes here
+		var image2 = document.createElement("img");
+			image2.className="img-responsive"; 
+			image2.alt="Placeholder image";
+			image2.src="images/ImgResponsive_Placeholder.png";		
+		colIsCorrect.appendChild(image2);
+		rowIsCorrect.appendChild(colIsCorrect);		
+		colDiv3.appendChild(rowIsCorrect);
+		
+		
+		rowDiv.appendChild(colDiv1);
 		rowDiv.appendChild(colDiv2);
-		
-		
-		
+		rowDiv.appendChild(colDiv3);
 		document.getElementById(containerID).appendChild(rowDiv);
-		
+		downloadAndDisplayImageDirectly(imageName,ansUniqName+"image");
 	 }
 	 
 	 function saveAnswerText(UniqName){
@@ -220,10 +308,12 @@
 					if(!obj.hasOwnProperty(prop)) continue;
 
 					//properties are in order: img,isCorrect, text					
-					properties[prop]=obj[prop];					
+					properties[prop]=obj[prop];
 				}
 				console.log(containerID);
-				generateAnswer(key,properties["text"],properties["img"],properties["isCorrect"],containerID);
+				answerToImage[key]=properties["img"];
+				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);
+				return;
 			}
 			generateCreateButton(containerID);
 		}
