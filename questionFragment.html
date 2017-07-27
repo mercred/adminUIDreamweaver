@@ -100,14 +100,14 @@
 		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";
 		var colDiv3=document.createElement("div");	colDiv3.className="col-lg-1";
 		 
-		var rowDiv11 = document.createElement("div"); rowDiv11.className="row";rowDiv11.style.backgroundColor="black";
+		var rowDiv11 = document.createElement("div"); rowDiv11.className="row";
 		 var textArea = document.createElement("textarea");	textArea.style.resize="none";
 		 textArea.style.width="100%";
 		 textArea.value="ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus";
 		 rowDiv11.appendChild(textArea);
 		 colDiv1.appendChild(rowDiv11);
 		 
-		 var rowDiv12 = document.createElement("div"); rowDiv12.className="row";rowDiv11.style.backgroundColor="orange";
+		 var rowDiv12 = document.createElement("div"); rowDiv12.className="row";
 		 var saveButton = document.createElement("button");
 		 saveButton.className ="btn btn-default";
 		 saveButton.style.width="100%";
@@ -122,7 +122,6 @@
 		
 		 
 		 var colDivUpload=document.createElement("div");colDivUpload.className="col-lg-6";
-		 colDivUpload.style.backgroundColor="yellow";
 		 var UploadButton = document.createElement("button");
 		 UploadButton.className="btn btn-default";
 		 UploadButton.style.width="100%";
@@ -132,8 +131,7 @@
 		 
 		 
 		 
-		 var colDivDelete=document.createElement("div");	colDivDelete.className="col-lg-6";
-		 colDivDelete.style.backgroundColor="orange";
+		 var colDivDelete=document.createElement("div");	colDivDelete.className="col-lg-6";		 
 		 var DeleteButton = document.createElement("button");
 		 DeleteButton.className="btn btn-default";
 		 DeleteButton.style.width="100%";
@@ -144,7 +142,7 @@
 		 
 		 
 		 var rowDiv22 = document.createElement("div"); rowDiv22.className="row";
-		 rowDiv22.style.backgroundColor="red";	
+		 
 		 var colDivImage=document.createElement("div");	colDivImage.className="col-lg-12";
 		  var mainImage = document.createElement("img");
 		 mainImage.src="images/ImgResponsive_Placeholder.png";
@@ -155,6 +153,19 @@
 		rowDiv.appendChild(colDiv2);
 		 
 		 
+		 var radioLabel=document.createElement('label');
+		 radioLabel.setAttribute("for",ansUniqName+"radio");
+		 radioLabel.innerHTML="Is correct?"
+		 
+		 var radioInput = document.createElement('input');
+		 radioInput.setAttribute('type', 'radio');
+		 radioInput.setAttribute('name', "radioInput");
+		 radioInput.setAttribute('align', "ABSMIDDLE");
+		 radioInput.setAttribute('id', ansUniqName+"radio");
+		 radioInput.value=ansUniqName; 
+		
+		colDiv3.appendChild(radioInput);
+		colDiv3.appendChild(radioLabel);
 		rowDiv.appendChild(colDiv3);
 		document.getElementById(containerID).appendChild(rowDiv);
 		 
@@ -313,7 +324,7 @@
 				console.log(containerID);
 				answerToImage[key]=properties["img"];
 				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);
-				return;
+				
 			}
 			generateCreateButton(containerID);
 		}

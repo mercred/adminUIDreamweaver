@@ -17,7 +17,7 @@
 		<![endif]-->
   </head>
   <body onLoad="myFunction()">
-	<div class="container" style="width: 100%">
+	<div class="container-fluid">
       <header class="row">
         <div class="col-lg-12">
           <h1>Admin Firebase UI</h1>
@@ -35,13 +35,12 @@
 		<div class="col-lg-12">		
 		
 		<div class="fluidMedia">
-    		<iframe frameborder="0" id="questionFragmentIFrameId"> </iframe>
-		</div>
+    <iframe frameborder="0" height="100%" id="questionFragmentIFrameId"  width="100%"></iframe>
+</div>
+    		
+    		
 		
 		
-		
-		
-		  
 		</div>
       </div>
 	</div>
@@ -56,15 +55,17 @@
 	<!-- Include all compiled plugins (below), or include individual files as needed --> 
 	<script src="js/bootstrap.js"></script>
 	
+	
 	<script> 
 	  function myFunction(){ 
+		  
 		  //questionFragment.html#category=Force&question=question1
 		  var url = window.location.href;	   
 		  var category=getParameter(url,"category");
 		  console.log("Sing.q.cat "+category);
 		  var question=getParameter(url,"question");		 
-          $('#questionFragmentIFrameId').attr('src', "questionFragment.html#category="+category+"&question="+question);		  
-	  }//end of function myFunction()
+          $('#questionFragmentIFrameId').attr('src', "questionFragment.html#category="+category+"&question="+question);	
+	  }
 		
 	  </script>
   </body>
