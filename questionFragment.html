@@ -75,6 +75,8 @@
 		 
 		 var textInput = document.createElement("input");
 		textInput.type = "text";
+		 textInput.style.marginLeft="auto";
+		 textInput.style.marginRight="auto";	
 		 textInput.setAttribute("id","newAnswerID");
 		
 		 
@@ -128,11 +130,9 @@
 	 
 	 function uploadAnswerImage(answerName,file){
 		 var storageRef = firebase.storage().ref();
-		 var id=String(uniqueID());
-         // Create a reference to 'mountains.jpg'
-        var imageRef = storageRef.child(id);		 
-		 
-		imageRef.put(file).then(function(snapshot) {
+		 var id=String(uniqueID());         
+         var imageRef = storageRef.child(id);		 
+		 imageRef.put(file).then(function(snapshot) {
 		  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(id);
 			answerToImage[answerName]=id;
 			downloadAndDisplayImageDirectly(id,answerName+"image");			
@@ -142,7 +142,7 @@
 	 function generateAnswerClean(ansUniqName,text,imageName,isCorrect,containerID){
 		var rowDiv = document.createElement("div");	rowDiv.className="row"; rowDiv.style.border="2px solid black";
 		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-7";
-		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";
+		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";		
 		var colDiv3=document.createElement("div");	colDiv3.className="col-lg-1";
 		 
 		 var rowDiv11 = document.createElement("div"); rowDiv11.className="row";
@@ -165,19 +165,13 @@
 		})(ansUniqName));	
 		 rowDiv12.appendChild(saveButton);		 
 		 colDiv1.appendChild(rowDiv12);
-		 
-		 rowDiv.appendChild(colDiv1);
-		 
-		 
-		 var rowDiv21 = document.createElement("div"); rowDiv21.className="row";
-		
-		 
+		 rowDiv.appendChild(colDiv1);		 
+		 var rowDiv21 = document.createElement("div"); rowDiv21.className="row";		 
 		 var colDivUpload=document.createElement("div");colDivUpload.className="col-lg-6";
 		 var UploadButton = document.createElement("button");
 		 UploadButton.className="btn btn-default";
 		 UploadButton.style.width="100%";
 		 UploadButton.innerHTML="Upload";
-		 //onclick="
 		 UploadButton.addEventListener('click', (function(UniqName) {
 			return function() {
 				document.getElementById(ansUniqName+"dialog").click();
@@ -189,18 +183,10 @@
 		uploadDialog.type="file";
 		uploadDialog.style.display="none";
 		uploadDialog.setAttribute("accept",".png");
-		//uploadDialog.style.display="none";			
 		uploadDialog.addEventListener('change', (function(UniqName) {
 			return function() {
 				var file=uploadDialog.files[0];
-				//change answerToImage
-			        //delete old
-				deleteAnswerImage(UniqName);
-				//upload new				
-				uploadAnswerImage(UniqName,file);
-				
-				
-				}
+				uploadAnswerImage(UniqName,file);}
 		})(ansUniqName));
 		
 		 colDivUpload.appendChild(UploadButton);
@@ -264,7 +250,7 @@
 	function displayQuestion(){
 		var containerID="mainContainer";
 		category=getParameter(window.location.href ,"category");
-	    question=getParameter(window.location.href ,"question"); 
+	    question=getParameter(window.location.href ,"question");
 		var mainCont=document.getElementById("mainContainer");
 		
 		while (mainCont.lastChild.id !== 'questionRowID') {
@@ -276,12 +262,12 @@
 		var oneQuestionQuery= firebase.database().ref("questions").child(category).child("questions").child(question).orderByKey();
   oneQuestionQuery.once("value").then(
         function(snapshot) {   	  
-			var snapObj=snapshot.val();			
+			var snapObj=snapshot.val();
+			//Display question text and image
 			$( "#qTxtID" ).text("Category:"+category+", question:"+question+".\n"+snapObj.text);			
 			downloadAndDisplayImageDirectly(snapObj.img,"qImgID");
-						//TODO: add event listeners
-			
-			
+			//--------------------------------------------------------------------------------------
+			//TODO: add event listeners			
 			var answers=snapObj.answers;		
 			for (var key in answers) {
 				// skip loop if the property is from prototype
@@ -296,7 +282,6 @@
 					//properties are in order: img,isCorrect, text					
 					properties[prop]=obj[prop];
 				}
-				console.log(containerID);
 				answerToImage[key]=properties["img"];
 				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);
 				

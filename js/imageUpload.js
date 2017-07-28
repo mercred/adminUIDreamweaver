@@ -16,19 +16,18 @@ function downloadAndDisplayImage(ImageName,ImageHTML){
 }
 function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 	
-	     var ImageStorageName=ImageName;
-	     if(typeof ImageStorageName=='undefined'){
+	     
+	     if(typeof ImageName=='undefined'){
 			 //no such file exists
-			 return;			 
+			 return;
 		 }	
-		 firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
+		 firebase.storage().ref(ImageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
-		   var img = document.getElementById(ImageHTML);
-           img.src = url;
+		   document.getElementById(ImageHTML).src = url;
 		   //currentImageKey=ImageName;
 			 
   		 }).catch(function(error) {
-              alert("During downloading images following error occured: "+error);
+              //alert("During downloading images following error occured: "+error);
            });
 }
 

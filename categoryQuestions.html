@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Main Page</title>
+    <!-- Bootstrap -->
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/custom.css" rel="stylesheet">
+	
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+  </head>
+  <body onLoad="displayQuestions()">
+	<div class="container" style="width: 100%">
+      <header class="row">
+        <div class="col-lg-12">
+          <h1>Admin Firebase UI</h1>
+        </div>
+      </header>
+      <div class="row">
+        <div class="col-lg-12">
+          <ul class="nav nav-tabs">
+            <li role="presentation"><a href="category.html">Select category</a></li>
+            <li role="presentation"><a href="question.html">Find question</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-lg-2" id="questionDivID">
+        	 <label>List of Questions:</label>
+            	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="questions_list">
+          </ul>
+        </div>
+        <div class="col-lg-10" id="iFrameID">
+        	<div class="fluidMedia">
+				<iframe frameborder="0" height="100%" id="questionIFrameId"  width="100%"></iframe>
+			</div>
+        	
+        	
+        </div>
+      </div>
+    </div>
+         
+    </div>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+	<script src="js/jquery-1.11.3.min.js"></script>
+
+	<!-- Include all compiled plugins (below), or include individual files as needed --> 
+	<script src="js/bootstrap.js"></script>
+	<script src="js/utility.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"> </script>
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"> </script>
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"> </script>
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"> </script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>	
+	
+	
+	
+	<script>
+			
+		var config = {
+			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
+			  databaseURL: "https://studymechanics.firebaseio.com",
+			storageBucket: "studymechanics.appspot.com"
+		  };
+		firebase.initializeApp(config);		
+		
+		var currentCategory;
+		function displayQuestions(){
+		var url = window.location.href;
+		currentCategory=getParameter(url,"category");
+		console.log(currentCategory);
+		var queryCategories =  firebase.database().ref("questions").child(currentCategory).child("questions").orderByKey();   
+		  queryCategories.once("value").then(
+			function(snapshot) {	    
+				snapshot.forEach(function(childSnapshot) {		      
+				  var key = childSnapshot.key;				  
+				  addQuestionToList(key);		 
+				});	 
+
+			});
+		}	
+		
+		
+		function getQuestionData(questionName){ 		  
+		  var category=currentCategory;	
+			
+		  
+		  var question=questionName;
+			console.log("Opening cate:"+currentCategory+"question: "+question);
+			  $('#questionIFrameId').attr('src', "about:blank");			
+          $('#questionIFrameId').attr('src', "questionFragment.html#category="+category+"&question="+question);
+			
+			
+			
+	  }
+function addQuestionToList(questionName){
+		var entry = document.createElement('li');		
+		entry.addEventListener('click', (function(questionName) {
+				return function() {
+						getQuestionData(questionName);
+					}
+			})(questionName));						
+
+		var a = document.createElement('a');  						 
+		a.appendChild(document.createTextNode(questionName));	
+		a.href = "javascript:;";							
+		entry.appendChild(a);	
+		document.getElementById("questions_list").appendChild(entry);	
+}
+		
+		
+		
+		
+		
+	</script>
+	
+  </body>
+</html>

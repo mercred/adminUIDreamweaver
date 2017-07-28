@@ -111,6 +111,8 @@ function deleteCurrentCategory(){
 }
 function getCategoryData(category){
 	currentCategory= category;
+	var textHref="categoryQuestions.html#category="+currentCategory;
+	document.getElementById("displayQuestionsButton").href=textHref;	
 	document.getElementById('name').innerHTML=currentCategory;
 	getCategoryNQuestions();
 	getCategoryBackgroundMaterialDB();		
