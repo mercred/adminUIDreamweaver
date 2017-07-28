@@ -54,10 +54,6 @@
           </ul>
         </div>
         <div class="col-lg-10" id="iFrameID">
-        	<div class="fluidMedia">
-				<iframe frameborder="0" height="100%" id="questionIFrameId"  width="100%"></iframe>
-			</div>
-        	
         	
         </div>
       </div>
@@ -124,15 +120,26 @@ function addQuestionToList(questionName){
 		document.getElementById("questions_list").appendChild(entry);	
 }
 		
-		function getQuestionData(questionName){ 		  
+		function getQuestionData(questionName){ 
+			
+			//delete previous frame if exists
+			var myNode = document.getElementById("iFrameID");
+				while (myNode.firstChild) {
+					myNode.removeChild(myNode.firstChild);
+				}
 		  var category=currentCategory;			  
 		  var question=questionName;
-			console.log("Opening cate:"+currentCategory+"question: "+question);
-			  $('#questionIFrameId').attr('src', "about:blank");			
-          $('#questionIFrameId').attr('src', "questionFragment.html#category="+category+"&question="+question);
+		  var frameSrc="questionFragment.html#category="+category+"&question="+question;			
 			
-			
-			
+			var fluidMediaDiv = document.createElement("div");	fluidMediaDiv.className="fluidMedia";
+			var mainFrame = document.createElement("iframe");
+			mainFrame.frameBorder = 0;
+			mainFrame.height="100%";
+			mainFrame.width="100%";
+			mainFrame.id="questionIFrameId";
+			mainFrame.src=frameSrc;			
+			fluidMediaDiv.appendChild(mainFrame);
+			document.getElementById("iFrameID").appendChild(fluidMediaDiv);          	
 	  }
 		
 	function createEmptyQuestion(){
@@ -158,8 +165,6 @@ function createEmptyQuestionDB(questionName) {
 		  	answers:"",  
 		  	text:"empty" 
 	  });
-	
-	
 }	
 		
 		

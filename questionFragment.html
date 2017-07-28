@@ -22,13 +22,19 @@
  
   <div class="row" style="border: 2px solid black" id="questionRowID">
     <div class="col-lg-8" >
+    <b><h3 id="topHeader" style="font-weight:500;">Test Header</h3></b>
     <div class="row"><textarea id="qTxtID" style="width:100%;resize: none;"></textarea></div>
     <div class="row">
-    	<button type="button" class="btn btn-default" style="width: 100%">Save</button> 
+    	<button type="button" class="btn btn-default" onClick="saveQuestionText()" style="width: 100%">Save</button> 
     </div>   
     		
     </div>
     <div class="col-lg-4">
+     <div class="row">
+        <div class="col-lg-12">
+        	 <button type="button" class="btn btn-danger" onClick="deleteQuestion()" style="width: 100%">Delete question</button> 
+        </div>
+        </div>
       <div class="row">
         <div class="col-lg-6">
         	 <button type="button" class="btn btn-default" style="width: 100%">Upload</button> 
@@ -76,7 +82,7 @@
 		 var colDiv1=document.createElement("div");	colDiv1.className="col-lg-12";
 		 
 		 var saveButton = document.createElement("button");
-		 saveButton.className ="btn btn-default";
+		 saveButton.className ="btn btn-success";
 		 saveButton.style.width="100%";
 		 saveButton.innerHTML="Add answer option";
 		 saveButton.addEventListener('click', (function(containerID) {
@@ -104,14 +110,14 @@
 	 }
 	 function deleteAnswerImage(answerName){		
 		 
-		 if(typeof answerToImage[answerName]=='undefined'){	 
+		 if(typeof answerToImage[answerName]=='undefined'||answerToImage[answerName]=='undefined'){	 
 			  return;
 		 } 		 
 		 var desertRef = firebase.storage().ref(answerToImage[answerName]); 
 
       // Delete the file
       desertRef.delete().then(function() {
-		 firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(null);		 
+		 firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set("");
 		 delete answerToImage[answerName];		 
 		  
       }).catch(function(error) {
@@ -133,10 +139,10 @@
 		}
 	 
 	 function generateAnswerClean(ansUniqName,text,imageName,isCorrect,containerID){
-		var rowDiv = document.createElement("div");	rowDiv.className="row"; rowDiv.style.border="2px solid black";
-		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-7";
+		var rowDiv = document.createElement("div");	rowDiv.className="row"; rowDiv.style.border="2px solid black"; rowDiv.id=ansUniqName+"rowDiv";
+		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-6";
 		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";		
-		var colDiv3=document.createElement("div");	colDiv3.className="col-lg-1";
+		var colDiv3=document.createElement("div");	colDiv3.className="col-lg-2";
 		 
 		 var rowDiv11 = document.createElement("div"); rowDiv11.className="row";
 		 var textArea = document.createElement("textarea");	textArea.style.resize="none";
@@ -145,12 +151,6 @@
 		 textArea.style.width="100%";		
 		 rowDiv11.appendChild(textArea);
 		 colDiv1.appendChild(rowDiv11);
-		 
-		 
-		 
-		 
-		 
-		 
 		 var rowDiv12 = document.createElement("div"); rowDiv12.className="row";
 		 var saveButton = document.createElement("button");
 		 saveButton.className ="btn btn-default";
@@ -237,10 +237,11 @@
 		 radioInput.addEventListener('mousedown', (function(ansUniqName) {
 		return function() {
 				var prevVal = $('input[name="radioInput"]:checked').val();
-				firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(prevVal).update({
-				 isCorrect:false				  
-				});
-							
+			    if(typeof prevVal!='undefined'&& prevVal!="undefined")
+					{	firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(prevVal).update({
+						 isCorrect:false				  
+						});
+					}
 			    var val = $(this).val();
 			firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(val).update({
 				 isCorrect:true				  
@@ -248,11 +249,68 @@
 				}
 		})(ansUniqName));
 		 
+		 var rowDivRadio = document.createElement("div"); rowDivRadio.className="row";		 
+		 var colDivRadio=document.createElement("div");	colDivRadio.className="col-lg-12";
+		 colDivRadio.appendChild(radioInput);
+		 colDivRadio.appendChild(radioLabel);
+		 rowDivRadio.appendChild(colDivRadio);	 
+		 
+		 var rowDivDeleteAnswer = document.createElement("div"); rowDivDeleteAnswer.className="row";		 
+		 var colDivDeleteAnswer=document.createElement("div");	colDivDeleteAnswer.className="col-lg-12";
+		 
+		 var DeleteAnswerButton = document.createElement("button");
+		 DeleteAnswerButton.className="btn btn-warning";
+		 DeleteAnswerButton.style.width="100%";
+		 DeleteAnswerButton.innerHTML="Delete answer";
+		 DeleteAnswerButton.addEventListener('click', (function(ansUniqName) {
+		return function() {
+			document.getElementById(containerID).removeChild(document.getElementById(ansUniqName+"rowDiv"));
+			
+			
+			
+			 if(typeof answerToImage[ansUniqName]=='undefined'||answerToImage[ansUniqName]=='undefined'){	 
+			  
+		 } 		else{ 
+			 var desertRef = firebase.storage().ref(answerToImage[ansUniqName]); 
+
+		  // Delete the file
+		  desertRef.delete().then(function() {
+			  delete answerToImage[ansUniqName];		 
+
+		  }).catch(function(error) {
+			//file was already deleted. TODO: add some kind of a check if node exists
+			  console.log("File already deleted");
+		  }); 
+		 }
+			
+			var index = answerList.indexOf(ansUniqName);
+			if (index > -1) {
+				answerList.splice(index, 1);
+			}			
+		
+			var prevVal = $('input[name="radioInput"]:checked').val();
+			    if(typeof prevVal=='undefined'|| prevVal=="undefined"){
+					//currently deleted answer was correct,set first answer as correct	
+					if(answerList.length>0){					
+						firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(answerList[0]).update({
+						 isCorrect:true				  
+						});					
+						//set radiobutton to true
+						document.getElementById(answerList[0]+"radio").checked=true;						
+					}
+				}
+			
+		
+			firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(ansUniqName).remove();			
+		}
+		})(ansUniqName)); 
+		 colDivDeleteAnswer.appendChild(DeleteAnswerButton);
+		 rowDivDeleteAnswer.appendChild(colDivDeleteAnswer);
 		 
 		 
 		
-		colDiv3.appendChild(radioInput);
-		colDiv3.appendChild(radioLabel);
+		colDiv3.appendChild(rowDivRadio);
+		colDiv3.appendChild(rowDivDeleteAnswer);
 		rowDiv.appendChild(colDiv3);
 		document.getElementById(containerID).appendChild(rowDiv);
 		downloadAndDisplayImageDirectly(imageName,ansUniqName+"image");
@@ -262,6 +320,11 @@
 	 function saveAnswerText(UniqName){
 		  var answerText = document.getElementById(UniqName+"text").value;		  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(UniqName).child('text').set(answerText);	 
 	 }
+	  function saveQuestionText(){		  
+		  var questionText = document.getElementById("qTxtID").value;		  firebase.database().ref('questions').child(category).child('questions').child(question).child('text').set(questionText);	 
+	 }
+	 
+	 
 	 
 	function displayQuestion(){
 		var containerID="mainContainer";
@@ -280,7 +343,10 @@
         function(snapshot) {   	  
 			var snapObj=snapshot.val();
 			//Display question text and image
-			$( "#qTxtID" ).text("Category:"+category+", question:"+question+".\n"+snapObj.text);			
+			$( "#qTxtID" ).text(snapObj.text);
+			$( "#topHeader" ).text("Category:"+category+", question:"+question+".");
+			
+			
 			downloadAndDisplayImageDirectly(snapObj.img,"qImgID");
 			//--------------------------------------------------------------------------------------
 			//TODO: add event listeners		
@@ -299,11 +365,16 @@
 					//properties are in order: img,isCorrect, text					
 					properties[prop]=obj[prop];
 				}
-				answerToImage[key]=properties["img"];
+				
+				if (properties["img"]!=""&&typeof properties["img"]!='undefined' ){
+					answerToImage[key]=properties["img"];
+				 }
+				
 				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);			
 				
 			}
 			generateCreateButton(containerID);
+			console.log(answerToImage);
 		}
 			
     );//end of oneQuestionQuery.once("value").then 

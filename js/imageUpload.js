@@ -30,6 +30,7 @@ function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 		   //currentImageKey=ImageName;
 			 
   		 }).catch(function(error) {
+			 console.log("No such file exists");
               //alert("During downloading images following error occured: "+error);
            });
 }
