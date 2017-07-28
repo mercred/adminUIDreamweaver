@@ -76,22 +76,42 @@
 	 
 	 function deleteAnswerImage(answerName){		
 		 
-		 
-		 
-		 
-		 
-		 
-		 var desertRef = firebase.storage().ref(answerToImage[answerName]);
+		 if(typeof answerToImage[answerName]=='undefined'){	 
+			  return;
+		 } 		 
+		 var desertRef = firebase.storage().ref(answerToImage[answerName]); 
 
       // Delete the file
       desertRef.delete().then(function() {
-		 firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(null);
+		 firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(null);		 
+		 delete answerToImage[answerName];		 
 		  
       }).catch(function(error) {
-        alert("Error occured during file deletion: "+ error);
+        //file was already deleted. TODO: add some kind of a check if node exists
+		  console.log("File already deleted");
       }); 
 		 
 	 }
+	 
+	 function uploadAnswerImage(answerName,file){
+		 var storageRef = firebase.storage().ref();
+		 var id=String(uniqueID());
+         // Create a reference to 'mountains.jpg'
+        var imageRef = storageRef.child(id);		 
+		 
+		imageRef.put(file).then(function(snapshot) {
+		  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(id);
+			answerToImage[answerName]=id;
+			downloadAndDisplayImageDirectly(id,answerName+"image");			
+		});
+		}
+	 
+	
+	 
+	 
+	 
+	 
+	 
 	 
 	 
 	 function generateAnswerClean(ansUniqName,text,imageName,isCorrect,containerID){
@@ -100,10 +120,11 @@
 		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-4";
 		var colDiv3=document.createElement("div");	colDiv3.className="col-lg-1";
 		 
-		var rowDiv11 = document.createElement("div"); rowDiv11.className="row";
+		 var rowDiv11 = document.createElement("div"); rowDiv11.className="row";
 		 var textArea = document.createElement("textarea");	textArea.style.resize="none";
-		 textArea.style.width="100%";
-		 textArea.value="ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus";
+		 textArea.setAttribute("id",ansUniqName+"text");
+		 textArea.value=text;
+		 textArea.style.width="100%";		
 		 rowDiv11.appendChild(textArea);
 		 colDiv1.appendChild(rowDiv11);
 		 
@@ -112,6 +133,11 @@
 		 saveButton.className ="btn btn-default";
 		 saveButton.style.width="100%";
 		 saveButton.innerHTML="Save";
+		 saveButton.addEventListener('click', (function(UniqName) {
+			return function() {
+					saveAnswerText(UniqName);
+				}
+		})(ansUniqName));	
 		 rowDiv12.appendChild(saveButton);		 
 		 colDiv1.appendChild(rowDiv12);
 		 
@@ -126,7 +152,34 @@
 		 UploadButton.className="btn btn-default";
 		 UploadButton.style.width="100%";
 		 UploadButton.innerHTML="Upload";
+		 //onclick="
+		 UploadButton.addEventListener('click', (function(UniqName) {
+			return function() {
+				document.getElementById(ansUniqName+"dialog").click();
+				}
+		})(ansUniqName));
+		 
+		var uploadDialog=document.createElement("input");
+		uploadDialog.setAttribute("id",ansUniqName+"dialog");
+		uploadDialog.type="file";
+		uploadDialog.style.display="none";
+		uploadDialog.setAttribute("accept",".png");
+		//uploadDialog.style.display="none";			
+		uploadDialog.addEventListener('change', (function(UniqName) {
+			return function() {
+				var file=uploadDialog.files[0];
+				//change answerToImage
+			        //delete old
+				deleteAnswerImage(UniqName);
+				//upload new				
+				uploadAnswerImage(UniqName,file);
+				
+				
+				}
+		})(ansUniqName));
+		
 		 colDivUpload.appendChild(UploadButton);
+		 colDivUpload.appendChild(uploadDialog);
 		 rowDiv21.appendChild(colDivUpload);
 		 
 		 
@@ -136,6 +189,13 @@
 		 DeleteButton.className="btn btn-default";
 		 DeleteButton.style.width="100%";
 		 DeleteButton.innerHTML="Delete Current Image";
+		 DeleteButton.addEventListener('click', (function(UniqName) {
+		return function() {
+				deleteAnswerImage(UniqName);
+			    document.getElementById(ansUniqName+"image").src="images/ImgResponsive_Placeholder.png";
+			
+				}
+		})(ansUniqName));
 		 colDivDelete.appendChild(DeleteButton);
 		 rowDiv21.appendChild(colDivDelete);		 
 		 colDiv2.appendChild(rowDiv21);
@@ -145,6 +205,7 @@
 		 
 		 var colDivImage=document.createElement("div");	colDivImage.className="col-lg-12";
 		  var mainImage = document.createElement("img");
+		 mainImage.setAttribute("id",ansUniqName+"image");
 		 mainImage.src="images/ImgResponsive_Placeholder.png";
 		 mainImage.className="img-responsive";
 		 colDivImage.appendChild(mainImage);
@@ -168,125 +229,6 @@
 		colDiv3.appendChild(radioLabel);
 		rowDiv.appendChild(colDiv3);
 		document.getElementById(containerID).appendChild(rowDiv);
-		 
-	 }
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	function generateAnswer(ansUniqName,text,imageName,isCorrect,containerID){
-		
-		var rowDiv = document.createElement("div");	rowDiv.className="row";
-		var colDiv1=document.createElement("div");	colDiv1.className="col-lg-6";
-		var colDiv2=document.createElement("div");	colDiv2.className="col-lg-5";
-		var colDiv3=document.createElement("div");	colDiv2.className="col-lg-1";
-		
-		var inputText=document.createElement("textarea");
-			inputText.setAttribute("id",ansUniqName+"text");
-			inputText.value=text;
-		    inputText.style.resize="none";
-		    inputText.style.width="100%";		    
-		colDiv1.appendChild(inputText);
-		var saveTxtButton=document.createElement("button");
-			saveTxtButton.class="btn btn-default";
-			saveTxtButton.innerHTML="Save";
-			saveTxtButton.type="button";
-			saveTxtButton.addEventListener('click', (function(UniqName) {
-			return function() {
-					saveAnswerText(UniqName);
-				}
-		})(ansUniqName));	
-		colDiv1.appendChild(saveTxtButton);
-		
-		
-		var rowDiv41 = document.createElement("div");	rowDiv41.className="row"; 
-		//add 2 columns and 2 buttons to rowDiv41
-		
-		
-		/*<input type="file" multiple onchange="uploadImagesBG(this.files)" id="inputFile" accept=".png" style="display: none"> 
-              	<input type="button" style="width: 100%" class="btn btn-default" value="Upload" onclick="document.getElementById('inputFile').click();" /> */ 
-		
-		
-		var colDiv411=document.createElement("div");	colDiv411.className="col-lg-6";
-		var uploadDialog=document.createElement("input");
-		uploadDialog.type="file";
-		uploadDialog.setAttribute("accept",".png");
-		//uploadDialog.style.display="none";			
-		uploadDialog.addEventListener('change', (function(UniqName) {
-			return function() {
-					var file=uploadDialog.files[0];
-				//change answerToImage
-					console.log(file);
-					console.log(UniqName);
-				}
-		})(ansUniqName));
-		colDiv411.appendChild(uploadDialog);
-		
-	   var colDiv412=document.createElement("div");	colDiv412.className="col-lg-6";
-	   var deleteButton=document.createElement("button");
-		saveTxtButton.class="btn btn-default";
-		saveTxtButton.innerHTML="Delete Current Image";
-		saveTxtButton.type="button";
-		saveTxtButton.addEventListener('click', (function(UniqName) {
-		return function() {
-				deleteAnswerImage(UniqName);
-			    document.getElementById(ansUniqName+"image").src="images/ImgResponsive_Placeholder.png";
-			
-				}
-		})(ansUniqName));	
-		colDiv412.appendChild(deleteButton);
-		
-		rowDiv41.appendChild(colDiv411);
-		rowDiv41.appendChild(colDiv412);
-		
-		var rowDiv42 = document.createElement("div");	rowDiv42.className="row"; 
-			//add image to rowDiv42
-		
-		 var colDiv421=document.createElement("div");	colDiv421.className="col-lg-12";
-		
-			var image = document.createElement("img");
-				image.id=ansUniqName+"image"; 
-				image.className="img-responsive"; 
-				image.alt="Placeholder image";
-			colDiv421.appendChild(image);
-		rowDiv42.appendChild(colDiv421);
-		colDiv2.appendChild(rowDiv41);
-		colDiv2.appendChild(rowDiv42);
-		
-		/*
-		<div class="row">
-              <div class="col-lg-12" ><img id="bgImageId" src="images/ImgResponsive_Placeholder.png" class="img-responsive" alt="Placeholder image"></div>         
-            </div>
-		*/
-		
-		var rowIsCorrect=document.createElement("div");	rowIsCorrect.className="row";
-		var colIsCorrect=document.createElement("div");	colIsCorrect.className="col-lg-12";	
-		//radio button goes here
-		var image2 = document.createElement("img");
-			image2.className="img-responsive"; 
-			image2.alt="Placeholder image";
-			image2.src="images/ImgResponsive_Placeholder.png";		
-		colIsCorrect.appendChild(image2);
-		rowIsCorrect.appendChild(colIsCorrect);		
-		colDiv3.appendChild(rowIsCorrect);
-		
-		
-		rowDiv.appendChild(colDiv1);
-		rowDiv.appendChild(colDiv2);
-		rowDiv.appendChild(colDiv3);
-		document.getElementById(containerID).appendChild(rowDiv);
 		downloadAndDisplayImageDirectly(imageName,ansUniqName+"image");
 	 }
 	 
@@ -303,6 +245,7 @@
 			var snapObj=snapshot.val();			
 			
 			$( "#qTxtID" ).text("Category:"+category+", question:"+question+".\n"+snapObj.text);
+			console.log("Main loop iage "+snapObj.img);
 			downloadAndDisplayImageDirectly(snapObj.img,"qImgID");
 						//TODO: add event listeners
 			

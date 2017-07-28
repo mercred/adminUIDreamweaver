@@ -17,6 +17,10 @@ function downloadAndDisplayImage(ImageName,ImageHTML){
 function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 	
 	     var ImageStorageName=ImageName;
+	     if(typeof ImageStorageName=='undefined'){
+			 //no such file exists
+			 return;			 
+		 }	
 		 firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   var img = document.getElementById(ImageHTML);
