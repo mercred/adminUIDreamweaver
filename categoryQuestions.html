@@ -34,9 +34,22 @@
       </div>
       <div class="row">
     <div class="col-lg-12">
+     <div class="row">
+            <div class="col-lg-12">
+              <label for="textfield2">Enter name:</label>
+              <input type="text" name="textfield2" id="questionName">            	
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <button type="button" class="btn btn-default" onClick="createEmptyQuestion()"> Create new question    
+              </button>
+            </div>
+          </div>
+     
       <div class="row">
         <div class="col-lg-2" id="questionDivID">
-        	 <label>List of Questions:</label>
+        	 <label id="title">List of Questions:</label>
             	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="questions_list">
           </ul>
         </div>
@@ -76,34 +89,26 @@
 		firebase.initializeApp(config);		
 		
 		var currentCategory;
+		var questionList=[];
+		
 		function displayQuestions(){
-		var url = window.location.href;
-		currentCategory=getParameter(url,"category");
-		console.log(currentCategory);
-		var queryCategories =  firebase.database().ref("questions").child(currentCategory).child("questions").orderByKey();   
-		  queryCategories.once("value").then(
-			function(snapshot) {	    
-				snapshot.forEach(function(childSnapshot) {		      
-				  var key = childSnapshot.key;				  
-				  addQuestionToList(key);		 
-				});	 
+			questionList=[];
+			var url = window.location.href;
+			currentCategory=getParameter(url,"category");
+			document.getElementById("title").innerHTML="Questions of category "+currentCategory;
+			var queryCategories =  firebase.database().ref("questions").child(currentCategory).child("questions").orderByKey();   
+			  queryCategories.once("value").then(
+				function(snapshot) {	    
+					snapshot.forEach(function(childSnapshot) {		      
+					  var key = childSnapshot.key;	
+					  questionList.push(key);
+					  addQuestionToList(key);		 
+					});	 
 
-			});
+				});
 		}	
 		
 		
-		function getQuestionData(questionName){ 		  
-		  var category=currentCategory;	
-			
-		  
-		  var question=questionName;
-			console.log("Opening cate:"+currentCategory+"question: "+question);
-			  $('#questionIFrameId').attr('src', "about:blank");			
-          $('#questionIFrameId').attr('src', "questionFragment.html#category="+category+"&question="+question);
-			
-			
-			
-	  }
 function addQuestionToList(questionName){
 		var entry = document.createElement('li');		
 		entry.addEventListener('click', (function(questionName) {
@@ -119,7 +124,43 @@ function addQuestionToList(questionName){
 		document.getElementById("questions_list").appendChild(entry);	
 }
 		
+		function getQuestionData(questionName){ 		  
+		  var category=currentCategory;			  
+		  var question=questionName;
+			console.log("Opening cate:"+currentCategory+"question: "+question);
+			  $('#questionIFrameId').attr('src', "about:blank");			
+          $('#questionIFrameId').attr('src', "questionFragment.html#category="+category+"&question="+question);
+			
+			
+			
+	  }
 		
+	function createEmptyQuestion(){
+		  var questionName = document.getElementById("questionName").value;
+		  document.getElementById("questionName").value=null;
+		  if(questionList.contains(questionName)){
+			alert("Question with this name already exists!");  
+		  }else{
+				if(questionName==null|| questionName==""){
+				alert("You must assign a name");		
+				}
+				else{
+			  createEmptyQuestionDB(questionName);
+			  displayQuestions();
+			   }  	    	  
+		  }
+}
+function createEmptyQuestionDB(questionName) {
+	  //firebase.database().ref('Categories').child(questionName).set(0);
+	  firebase.database().ref('questions').child(currentCategory).child("questions").child(questionName).set({
+	  		img:"",
+		  	questionId:questionName,
+		  	answers:"",  
+		  	text:"empty" 
+	  });
+	
+	
+}	
 		
 		
 		

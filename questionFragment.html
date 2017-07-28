@@ -19,6 +19,7 @@
   </head>
   <body onLoad="displayQuestion()">
 <div class="container-fluid" id="mainContainer">
+ 
   <div class="row" style="border: 2px solid black" id="questionRowID">
     <div class="col-lg-8" >
     <div class="row"><textarea id="qTxtID" style="width:100%;resize: none;"></textarea></div>
@@ -55,14 +56,16 @@
 
  <script>
 	 // <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> 
- 
+
+  
+	 
   var config = {
       apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
       databaseURL: "https://studymechanics.firebaseio.com" ,	  
 	  storageBucket: "studymechanics.appspot.com"
   };
 	
-	firebase.initializeApp(config);
+	 firebase.initializeApp(config);
 	 var category;
 	 var question;
 	 var answerToImage={};
@@ -70,15 +73,7 @@
 	 
 	 function generateCreateButton(containerID){
 		 var rowDiv = document.createElement("div");rowDiv.className="row"; rowDiv.style.border="2px solid black";
-		 var colDiv1=document.createElement("div");	colDiv1.className="col-lg-6";
-		 var colDiv2=document.createElement("div");	colDiv1.className="col-lg-6";
-		 
-		 var textInput = document.createElement("input");
-		textInput.type = "text";
-		 textInput.style.marginLeft="auto";
-		 textInput.style.marginRight="auto";	
-		 textInput.setAttribute("id","newAnswerID");
-		
+		 var colDiv1=document.createElement("div");	colDiv1.className="col-lg-12";
 		 
 		 var saveButton = document.createElement("button");
 		 saveButton.className ="btn btn-default";
@@ -86,27 +81,25 @@
 		 saveButton.innerHTML="Add answer option";
 		 saveButton.addEventListener('click', (function(containerID) {
 			return function() {
-				var text=document.getElementById("newAnswerID").value;
-				console.log(answerList);
-				if(text==""||text==null||answerList.contains(text)){
-					alert("Please enter answer name, unique within a question");
-					text="";
-					return;
-				}
+				var text=String(uniqueID());			
+				
 				//create new question option here and reload page
-				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('img').set(null);	
-				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(false);
+				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('img').set("");	
+			  if(answerList.length==0){
+				  console.log("Creating first answer option for this question");
+				  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(true);
+			  } else{
+				   firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(false);				  
+			  }
+				
 				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('text').set("Empty");
 				displayQuestion();
 				
-				
-				
 			}
 		})(containerID));
-		 colDiv1.appendChild(textInput);
-		 colDiv2.appendChild(saveButton);
-		 rowDiv.appendChild(colDiv1);
-		 rowDiv.appendChild(colDiv2);
+		 
+		 colDiv1.appendChild(saveButton);
+		 rowDiv.appendChild(colDiv1);		
 		 document.getElementById(containerID).appendChild(rowDiv);
 	 }
 	 function deleteAnswerImage(answerName){		
@@ -152,6 +145,11 @@
 		 textArea.style.width="100%";		
 		 rowDiv11.appendChild(textArea);
 		 colDiv1.appendChild(rowDiv11);
+		 
+		 
+		 
+		 
+		 
 		 
 		 var rowDiv12 = document.createElement("div"); rowDiv12.className="row";
 		 var saveButton = document.createElement("button");
@@ -234,13 +232,31 @@
 		 radioInput.setAttribute('name', "radioInput");
 		 radioInput.setAttribute('align', "ABSMIDDLE");
 		 radioInput.setAttribute('id', ansUniqName+"radio");
-		 radioInput.value=ansUniqName; 
+		 radioInput.value=ansUniqName;
+		 radioInput.checked=isCorrect;		 
+		 radioInput.addEventListener('mousedown', (function(ansUniqName) {
+		return function() {
+				var prevVal = $('input[name="radioInput"]:checked').val();
+				firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(prevVal).update({
+				 isCorrect:false				  
+				});
+							
+			    var val = $(this).val();
+			firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(val).update({
+				 isCorrect:true				  
+				});			
+				}
+		})(ansUniqName));
+		 
+		 
+		 
 		
 		colDiv3.appendChild(radioInput);
 		colDiv3.appendChild(radioLabel);
 		rowDiv.appendChild(colDiv3);
 		document.getElementById(containerID).appendChild(rowDiv);
 		downloadAndDisplayImageDirectly(imageName,ansUniqName+"image");
+			 
 	 }
 	 
 	 function saveAnswerText(UniqName){
@@ -267,8 +283,9 @@
 			$( "#qTxtID" ).text("Category:"+category+", question:"+question+".\n"+snapObj.text);			
 			downloadAndDisplayImageDirectly(snapObj.img,"qImgID");
 			//--------------------------------------------------------------------------------------
-			//TODO: add event listeners			
-			var answers=snapObj.answers;		
+			//TODO: add event listeners		
+			
+			var answers=snapObj.answers;	
 			for (var key in answers) {
 				// skip loop if the property is from prototype
 				if (!answers.hasOwnProperty(key)) continue;
@@ -283,7 +300,7 @@
 					properties[prop]=obj[prop];
 				}
 				answerToImage[key]=properties["img"];
-				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);
+				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);			
 				
 			}
 			generateCreateButton(containerID);
@@ -291,7 +308,16 @@
 			
     );//end of oneQuestionQuery.once("value").then 
 	 }//end of function displayQuestion()
-	  
+	  function getParentUrl() {
+		var isInIframe = (parent !== window),
+			parentUrl = null;
+
+		if (isInIframe) {
+			parentUrl = document.referrer;
+		}
+
+		return parentUrl;
+}
 	  </script> 
 	<!-- Include all compiled plugins (below), or include individual files as needed --> 
   <script src="js/bootstrap.js"></script>

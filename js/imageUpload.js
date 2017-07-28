@@ -2,7 +2,10 @@
 
 //downloads image with name ImageStorageName and loads into img with id ImageHTML
 function downloadAndDisplayImage(ImageName,ImageHTML){
-	
+		if(typeof ImageName=='undefined'||ImageName==""){
+			 //no such file exists
+			 return;
+		 }	
 	     var ImageStorageName=bgImageList[ImageName];
 		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
@@ -17,7 +20,7 @@ function downloadAndDisplayImage(ImageName,ImageHTML){
 function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 	
 	     
-	     if(typeof ImageName=='undefined'){
+	     if(typeof ImageName=='undefined'||ImageName==""){
 			 //no such file exists
 			 return;
 		 }	
