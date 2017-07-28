@@ -10,3 +10,12 @@ function getParameter(url,name){
 function isEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}

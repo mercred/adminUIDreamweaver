@@ -19,7 +19,7 @@
   </head>
   <body onLoad="displayQuestion()">
 <div class="container-fluid" id="mainContainer">
-  <div class="row" style="border: 2px solid black">
+  <div class="row" style="border: 2px solid black" id="questionRowID">
     <div class="col-lg-8" >
     <div class="row"><textarea id="qTxtID" style="width:100%;resize: none;"></textarea></div>
     <div class="row">
@@ -66,14 +66,47 @@
 	 var category;
 	 var question;
 	 var answerToImage={};
+	 var answerList=[];
 	 
 	 function generateCreateButton(containerID){
+		 var rowDiv = document.createElement("div");rowDiv.className="row"; rowDiv.style.border="2px solid black";
+		 var colDiv1=document.createElement("div");	colDiv1.className="col-lg-6";
+		 var colDiv2=document.createElement("div");	colDiv1.className="col-lg-6";
 		 
+		 var textInput = document.createElement("input");
+		textInput.type = "text";
+		 textInput.setAttribute("id","newAnswerID");
+		
 		 
+		 var saveButton = document.createElement("button");
+		 saveButton.className ="btn btn-default";
+		 saveButton.style.width="100%";
+		 saveButton.innerHTML="Add answer option";
+		 saveButton.addEventListener('click', (function(containerID) {
+			return function() {
+				var text=document.getElementById("newAnswerID").value;
+				console.log(answerList);
+				if(text==""||text==null||answerList.contains(text)){
+					alert("Please enter answer name, unique within a question");
+					text="";
+					return;
+				}
+				//create new question option here and reload page
+				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('img').set(null);	
+				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(false);
+				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('text').set("Empty");
+				displayQuestion();
+				
+				
+				
+			}
+		})(containerID));
+		 colDiv1.appendChild(textInput);
+		 colDiv2.appendChild(saveButton);
+		 rowDiv.appendChild(colDiv1);
+		 rowDiv.appendChild(colDiv2);
+		 document.getElementById(containerID).appendChild(rowDiv);
 	 }
-	 
-	 
-	 
 	 function deleteAnswerImage(answerName){		
 		 
 		 if(typeof answerToImage[answerName]=='undefined'){	 
@@ -105,14 +138,6 @@
 			downloadAndDisplayImageDirectly(id,answerName+"image");			
 		});
 		}
-	 
-	
-	 
-	 
-	 
-	 
-	 
-	 
 	 
 	 function generateAnswerClean(ansUniqName,text,imageName,isCorrect,containerID){
 		var rowDiv = document.createElement("div");	rowDiv.className="row"; rowDiv.style.border="2px solid black";
@@ -237,24 +262,31 @@
 	 }
 	 
 	function displayQuestion(){
+		var containerID="mainContainer";
 		category=getParameter(window.location.href ,"category");
-	    question=getParameter(window.location.href ,"question"); 	
+	    question=getParameter(window.location.href ,"question"); 
+		var mainCont=document.getElementById("mainContainer");
+		
+		while (mainCont.lastChild.id !== 'questionRowID') {
+			mainCont.removeChild(mainCont.lastChild);
+		}
+		answerToImage={};
+	    answerList=[];
+		
 		var oneQuestionQuery= firebase.database().ref("questions").child(category).child("questions").child(question).orderByKey();
   oneQuestionQuery.once("value").then(
         function(snapshot) {   	  
 			var snapObj=snapshot.val();			
-			
-			$( "#qTxtID" ).text("Category:"+category+", question:"+question+".\n"+snapObj.text);
-			console.log("Main loop iage "+snapObj.img);
+			$( "#qTxtID" ).text("Category:"+category+", question:"+question+".\n"+snapObj.text);			
 			downloadAndDisplayImageDirectly(snapObj.img,"qImgID");
 						//TODO: add event listeners
 			
-			var containerID="mainContainer";
+			
 			var answers=snapObj.answers;		
 			for (var key in answers) {
 				// skip loop if the property is from prototype
 				if (!answers.hasOwnProperty(key)) continue;
-
+				answerList.push(key);
 				var obj = answers[key];
 				var properties={};
 				for (var prop in obj) {
