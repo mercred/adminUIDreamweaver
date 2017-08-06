@@ -278,6 +278,8 @@
 
 		  // Delete the file
 		  desertRef.delete().then(function() {
+			  
+			 	 
 			  delete answerToImage[ansUniqName];		 
 
 		  }).catch(function(error) {
@@ -355,9 +357,43 @@
       }); 
 	 }
 	 
-	 
-	 
+	
+	 function deleteQuestion(){
+		 
+	
+	var decreaseCounter=firebase.database().ref('Categories').child(category);
+
+	decreaseCounter.once("value").then(
+      function(snapshot) {
+		
+		 decreaseCounter.set(parseInt(snapshot.val())-1);
+		 firebase.database().ref('questions').child(category).child('questions').child(question).set(null);
+		 window.location = 'about:blank';
+  		 
+      });	
+     //firebase.database().ref('current_time').once('value').then(function(snapshot) {
+}
+		 
+		 
+		 
+		 
+	
+		 
+		 
+	/*delete all images of the question
+		  var category;
+	 var question;
+	 var answerToImage={};
+	 var answerList=[];
+	 var questionImage;
+	 */
+		 	 
+	//display nothing
+	     
+		 
+	
 	function displayQuestion(){
+		 
 		var containerID="mainContainer";
 		category=getParameter(window.location.href ,"category");
 	    question=getParameter(window.location.href ,"question");

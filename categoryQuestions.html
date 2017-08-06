@@ -78,7 +78,7 @@
 	
 	
 	<script>
-			
+		var isCategoryPage=true;
 		var config = {
 			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
 			  databaseURL: "https://studymechanics.firebaseio.com",
@@ -90,11 +90,19 @@
 		
 		var currentCategory;
 		var questionList=[];
+		var updateParent=false;
 		
-		function displayQuestions(){
+		function displayQuestions(){			
 			questionList=[];
+			
+			var mainList=document.getElementById("questions_list");			
+			while (mainList.firstChild) {
+				mainList.removeChild(mainList.firstChild);
+			}	
+			
+			
 			var url = window.location.href;
-			currentCategory=getParameter(url,"category");
+			currentCategory=getParameter(url,"category");			
 			document.getElementById("title").innerHTML="Questions of category "+currentCategory;
 			var queryCategories =  firebase.database().ref("questions").child(currentCategory).child("questions").orderByKey();   
 			  queryCategories.once("value").then(
@@ -107,6 +115,24 @@
 
 				});
 		}	
+		function refreshQuestionList(){
+			questionList=[];
+			var mainList=document.getElementById("questions_list");			
+			while (mainList.firstChild) {
+				mainList.removeChild(mainList.firstChild);
+			}			
+			var queryCategories =  firebase.database().ref("questions").child(currentCategory).child("questions").orderByKey();   
+			  queryCategories.once("value").then(
+				function(snapshot) {	    
+					snapshot.forEach(function(childSnapshot) {		      
+					  var key = childSnapshot.key;	
+					  questionList.push(key);
+					  addQuestionToList(key);		 
+					});	 
+
+				});
+			
+		}
 		
 		
 function addQuestionToList(questionName){
@@ -141,7 +167,16 @@ function addQuestionToList(questionName){
 			mainFrame.height="100%";
 			mainFrame.width="100%";
 			mainFrame.id="questionIFrameId";
-			mainFrame.src=frameSrc;			
+			mainFrame.src=frameSrc;	
+			mainFrame.addEventListener("load", function(){
+				refreshQuestionList();				
+   
+});
+			
+			
+			
+			
+			
 			fluidMediaDiv.appendChild(mainFrame);
 			document.getElementById("iFrameID").appendChild(fluidMediaDiv);          	
 	  }
@@ -157,12 +192,19 @@ function addQuestionToList(questionName){
 				}
 				else{
 			  createEmptyQuestionDB(questionName);
+    var getCategoryQuestionCount=firebase.database().ref('Categories').child(currentCategory);
+	getCategoryQuestionCount.once("value").then(
+      function(snapshot) {
+		 getCategoryQuestionCount.set(parseInt(snapshot.val())+1);
+  		 
+      });			
 			  displayQuestions();
 			   }  	    	  
 		  }
 }
 function createEmptyQuestionDB(questionName) {
 	  //firebase.database().ref('Categories').child(questionName).set(0);
+	console.log(currentCategory+" "+questionName);
 	  firebase.database().ref('questions').child(currentCategory).child("questions").child(questionName).set({
 	  		img:"",
 		  	questionId:questionName,
