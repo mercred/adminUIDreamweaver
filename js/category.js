@@ -19,7 +19,9 @@ firebase.storage().ref().constructor.prototype.putFiles = function(files,referen
 		  const filesArr = [...files];
 		  return Promise.all(filesArr.map(function(file) {
 			var id=uniqueID();	
-			initialName=file.name.substring(0, file.name.length - 4);
+			  //remove all whitespaces
+			  var solidName=file.name.replace(/\s+/, "");
+			initialName=solidName.substring(0, solidName.length - 4);
 
 			var name=returnImageName(Object.keys(bgImageList),initialName);		
 			firebase.database().ref(reference).child(name).set(id);	 
@@ -131,7 +133,8 @@ function getCategoryNQuestions(){
 	var getCategoryQuestionCount=firebase.database().ref('Categories').child(currentCategory);
 	getCategoryQuestionCount.once("value").then(
       function(snapshot) {
-  		 document.getElementById("nQuestions").value=snapshot.val();
+		 
+  		 document.getElementById("nQuestions").innerHTML="Number of questions: "+snapshot.val();
       });
 	
 }	

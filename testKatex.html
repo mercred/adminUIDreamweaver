@@ -9,6 +9,10 @@
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
 <link href="css/custom.css" rel="stylesheet" type="text/css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,48 +22,19 @@
 <![endif]-->
 </head>
 
-<body>
-<div id="mask"></div>
-<div id="popup">    
-    Uploading, please wait...    
-</div>
+<body onLoad="testParsing()">
+
 <div class="container" id="mainContainer">
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
 
 
  
 </div>
 
-
 <script>
-	function getMatches(str, regex) {
-    var matches = [];
-    var match;
-
-    if (regex.global) {
-        regex.lastIndex = 0;
-    } else {
-        regex = new RegExp(regex.source, 'g' +
-            (regex.ignoreCase ? 'i' : '') +
-            (regex.multiline ? 'm' : '') +
-            (regex.sticky ? 'y' : ''));
-    }
-
-    while (match = regex.exec(str)) {
-        // If you want to use regex.lastIndex in this loop, you'd need more
-        // code here to fix IE < 9
-
-        matches.push(match);
-
-        if (regex.lastIndex === match.index) {
-            regex.lastIndex++;
-        }
-    }
-
-    return matches;
-}
-	
-	
+    //renderMathInElement(document.body);
+</script>
+<script>
+	 
 	
 	function playWithPopo(){
 	
@@ -79,36 +54,51 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 
     });	
 		}
-	
-	var text="sometex t sadf img1dfgd <a href='google.com'> Example text</a>";
+	function testKatex(){			
+	}
+	function testParsing(){
+		
+		var text="sometext nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod.\\( c = \\pm\\sqrt{a^2 + b^2}\\)   img232a sadf img1dfgd <a href='google.com'> Example text</a> img1";
 	var textWithoutTags="eet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod.";
 	var parentID="mainContainer";
-	//text=textWithoutTags;
-	//var patt = new RegExp("<link href=>(.*?)</link>|<image>(.*?)</image>|<latex>(.*?)</latex>");  
-	var pattern = new RegExp("<a href=(.*?)</a>|img(\\d)+.*\\s");  
-	//var pattern =new RegExp("img\\d");	
-	//var res = pattern.exec(text);
-	var res=getMatches(text,pattern);
-	console.log(res);
-	
-	/*
-	if(res==null){ 
-		//there might be more simple text
-		if(text!=''){
-			//generate and insert p with remaining text
-			insertText(text,parentID);
+		var res;
+		var pattern =new RegExp("img\\d+.*");
+		var mainString="";
+	    var splitString=text.split(" ");
+		for (i = 0; i < splitString.length; i++) {
+			res=pattern.exec(splitString[i]);
+			if(res!=null&&res!=undefined){
+				//add div with current text
+				if(mainString!=""&&mainString!=null){
+					insertText(mainString,parentID);
+					console.log("Inserting text "+ mainString);
+					mainString="";
+				}
+				//insert image
+				console.log("Inserting image "+splitString[i]);
+				//get URL from name
+				insertImage(splitString[i],parentID );
+				}else{
+					mainString+=" "+splitString[i];
+				}
+			
+			
 		}
-		//return here in the end
+		if(mainString!=""&&mainString!=null){
+				console.log("Inserting text "+ mainString);
+					insertText(mainString,parentID);
+		}
+		renderMathInElement(document.body);				
 	}
-	*/
+	
 	
 	
 	function insertText(text,parentElementID){
 		var rowDiv = document.createElement("div");
 		rowDiv.className="row";
 		var colDiv=document.createElement("div");
-		rowDiv.className="col-lg-12";		
-		colDiv.appendChild(document.createTextNode(text));	
+		colDiv.className="col-lg-12";
+		colDiv.innerHTML=text;		
 		rowDiv.appendChild(colDiv);	
 		document.getElementById(parentElementID).appendChild(rowDiv);		
 	}
@@ -127,32 +117,9 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 		colDiv.appendChild(image);	
 		rowDiv.appendChild(colDiv);	
 		document.getElementById(parentElementID).appendChild(rowDiv);		
-	}
-	function insertLink(link,linkText,parentElementID){
-		var rowDiv = document.createElement("div");
-		rowDiv.className="row";
-		var colDiv=document.createElement("div");
-		rowDiv.className="col-lg-12";
-		
-		var a = document.createElement('a');		
-		a.setAttribute('href',link);
-		a.innerHTML = linkText;	
-				
-		
-		colDiv.appendChild(a);	
-		rowDiv.appendChild(colDiv);	
-		document.getElementById(parentElementID).appendChild(rowDiv);		
-	}
+	}	
 	
-	function insertLatex(text,parentElementID){
-		var rowDiv = document.createElement("div");
-		rowDiv.className="row";
-		var colDiv=document.createElement("div");
-		rowDiv.className="col-lg-12";	
-	    katex.render(text, colDiv);			
-		rowDiv.appendChild(colDiv);	
-		document.getElementById(parentElementID).appendChild(rowDiv);		
-	}
+	
 	
 </script>
 <script src="js/jquery-1.11.3.min.js"></script>

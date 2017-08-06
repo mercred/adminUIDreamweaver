@@ -5,9 +5,11 @@ function downloadAndDisplayImage(ImageName,ImageHTML){
 		if(typeof ImageName=='undefined'||ImageName==""){
 			 //no such file exists
 			 return;
-		 }	
+		 }
+	
 	     var ImageStorageName=bgImageList[ImageName];
-		 var imageRef = firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
+	
+		 firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   var img = document.getElementById(ImageHTML);
            img.src = url;
@@ -24,13 +26,14 @@ function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 			 //no such file exists
 			 return;
 		 }	
+	 console.log(ImageName);
 		 firebase.storage().ref(ImageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   document.getElementById(ImageHTML).src = url;
 		   //currentImageKey=ImageName;
 			 
   		 }).catch(function(error) {
-			 console.log("No such file exists");
+			 console.log(error);
               //alert("During downloading images following error occured: "+error);
            });
 }
