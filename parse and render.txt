@@ -1,0 +1,74 @@
+package de.uni_saarland.studymechanics.utils;
+
+import android.content.Context;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import io.github.kexanie.library.MathView;
+
+/**
+ * Created by Administrator on 28.07.2017.
+ */
+
+public class parsAndRender {
+
+    LinearLayout mMaterialContent;
+    Context currentContext;
+    public parsAndRender(Context currentContext,LinearLayout mMaterialContent){
+        this.mMaterialContent=mMaterialContent;
+        this.mMaterialContent.setOrientation(LinearLayout.VERTICAL);
+        this.currentContext=currentContext;
+    }
+
+    private void renderContent(String text) {
+
+        String pattern="<image>(.*?)</image>|<latex>(.*?)</latex>";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(text);
+        String newText;
+        while(m.find( )){
+            if( m.start()!=0){
+                //text located before our match
+                mMaterialContent.addView(addTextView(text.substring(0,m.start()),currentContext));
+            }
+            if(m.group(1)==null){
+                //this is latex
+                mMaterialContent.addView(addMathView(m.group(2),currentContext));
+
+            }else{
+                //this is image
+                mMaterialContent.addView(addImageView(m.group(1),currentContext));
+            }
+            newText=text.substring(m.end(),text.length());
+            text=newText;
+            m = r.matcher(text);
+        }
+        //text located after the last match
+        if(text.length()!=0) mMaterialContent.addView(addTextView(text,currentContext));
+    }
+
+
+
+
+    private TextView addTextView(String text, Context currentContext)
+    {
+        TextView txtView = new TextView(currentContext);
+        txtView.setText(text);
+        return txtView;
+    }
+    private ImageView addImageView(String imgId, Context currentContext) {
+        ImageView imgView = new ImageView(currentContext);
+        String imgPath = mMaterial.getImgs().get(imgId);
+        repository.loadImage(imgPath, imgView);
+        return imgView;
+    }
+    private MathView addMathView(String latexText, Context currentContext) {
+        MathView mathView = new MathView(currentContext);
+        mathView.setEngine(0);//0 means KateX as rendering engine
+        mathView.setText(latexText);
+        return mathView;
+    }
+}

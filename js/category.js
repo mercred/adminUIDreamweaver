@@ -10,6 +10,9 @@ var config = {
 
 
 firebase.initializeApp(config);
+var email = "studymechanicsapp@gmail.com";
+var password= "vUvUh6Ph8h+d";			
+firebase.auth().signInWithEmailAndPassword(email, password);
 firebase.storage().ref().constructor.prototype.putFiles = function(files,reference) 
 		{ 
 		  var ref = this;

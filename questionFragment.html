@@ -55,6 +55,8 @@
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
  <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-auth.js"></script>
+ 
  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
  <script src="js/utility.js"></script>
@@ -68,10 +70,14 @@
   var config = {
       apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
       databaseURL: "https://studymechanics.firebaseio.com" ,	  
-	  storageBucket: "studymechanics.appspot.com"
+	  storageBucket: "studymechanics.appspot.com",
+	  authDomain: "studymechanics.firebaseapp.com"
   };
 	
 	 firebase.initializeApp(config);
+	 loginAfterInit(); 
+	 
+	 
 	 var category;
 	 var question;
 	 var answerToImage={};
@@ -373,8 +379,7 @@
 				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);			
 				
 			}
-			generateCreateButton(containerID);
-			console.log(answerToImage);
+			generateCreateButton(containerID);			
 		}
 			
     );//end of oneQuestionQuery.once("value").then 

@@ -30,7 +30,38 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
  
 </div>
 
+
 <script>
+	function getMatches(str, regex) {
+    var matches = [];
+    var match;
+
+    if (regex.global) {
+        regex.lastIndex = 0;
+    } else {
+        regex = new RegExp(regex.source, 'g' +
+            (regex.ignoreCase ? 'i' : '') +
+            (regex.multiline ? 'm' : '') +
+            (regex.sticky ? 'y' : ''));
+    }
+
+    while (match = regex.exec(str)) {
+        // If you want to use regex.lastIndex in this loop, you'd need more
+        // code here to fix IE < 9
+
+        matches.push(match);
+
+        if (regex.lastIndex === match.index) {
+            regex.lastIndex++;
+        }
+    }
+
+    return matches;
+}
+	
+	
+	
+	function playWithPopo(){
 	
 	showPopup();
 	function showPopup() {
@@ -47,16 +78,20 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
         $("#mask").hide();
 
     });	
-	var text="This is from one of the categories, example formula <link>www.google.com</link> is <latex>c = \\pm\\sqrt{a^2 + b^2}</latex>. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus laoreet nulla, at imperdiet nisl finibus nec. Proin in porttitor tellus. Praesent in risus euismod, laoreet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod. Pellentesque ultrices. Final link: <link href='google.com'>displayedName</link> <image>img1</image>";
+		}
+	
+	var text="sometex t sadf img1dfgd <a href='google.com'> Example text</a>";
 	var textWithoutTags="eet sem quis, rutrum felis. Integer eleifend suscipit lacinia. Nulla iaculis, massa a eleifend fringilla, nunc purus scelerisque lorem, ac fermentum nulla risus sit amet eros. Donec tempor dignissim nibh. Pellentesque lobortis sapien pellentesque, facilisis nisl vitae, mattis urna. Maecenas quis mi a lorem dictum tincidunt. Ut gravida, diam nec finibus tincidunt, enim neque laoreet diam, sed lacinia est erat ut turpis. Mauris ultrices eros at luctus euismod.";
 	var parentID="mainContainer";
 	//text=textWithoutTags;
-	var patt = new RegExp("<link href=>(.*?)</link>|<image>(.*?)</image>|<latex>(.*?)</latex>");    
-	var res = patt.exec(text);
-	//index
-	//
-	typeof myVar !== 'undefined'
+	//var patt = new RegExp("<link href=>(.*?)</link>|<image>(.*?)</image>|<latex>(.*?)</latex>");  
+	var pattern = new RegExp("<a href=(.*?)</a>|img(\\d)+.*\\s");  
+	//var pattern =new RegExp("img\\d");	
+	//var res = pattern.exec(text);
+	var res=getMatches(text,pattern);
+	console.log(res);
 	
+	/*
 	if(res==null){ 
 		//there might be more simple text
 		if(text!=''){
@@ -65,8 +100,8 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 		}
 		//return here in the end
 	}
+	*/
 	
-	console.log(res);
 	
 	function insertText(text,parentElementID){
 		var rowDiv = document.createElement("div");
@@ -117,7 +152,8 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 	    katex.render(text, colDiv);			
 		rowDiv.appendChild(colDiv);	
 		document.getElementById(parentElementID).appendChild(rowDiv);		
-	}	
+	}
+	
 </script>
 <script src="js/jquery-1.11.3.min.js"></script>
 </body>

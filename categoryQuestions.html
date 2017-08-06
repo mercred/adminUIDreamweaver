@@ -71,6 +71,8 @@
 	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"> </script>
 	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"> </script>
 	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"> </script>
+	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-auth.js"></script>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>	
 	
 	
@@ -80,9 +82,11 @@
 		var config = {
 			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
 			  databaseURL: "https://studymechanics.firebaseio.com",
-			storageBucket: "studymechanics.appspot.com"
+			storageBucket: "studymechanics.appspot.com",
+			 authDomain: "studymechanics.firebaseapp.com"
 		  };
-		firebase.initializeApp(config);		
+		firebase.initializeApp(config);	
+		loginAfterInit();
 		
 		var currentCategory;
 		var questionList=[];

@@ -19,3 +19,13 @@ Array.prototype.contains = function(obj) {
     }
     return false;
 }
+function loginAfterInit(){
+			var email = "studymechanicsapp@gmail.com";
+		  var password= "vUvUh6Ph8h+d";			
+		  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+			  // Handle Errors here.
+			  var errorCode = error.code;
+			  var errorMessage = error.message;
+			  console.log(errorMessage);			  
+			});	
+	}
