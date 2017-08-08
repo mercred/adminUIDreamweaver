@@ -1,5 +1,11 @@
-/* CSS Document */
+/* CSS Document B2DBBF 70C1B3 247BA0*/
 * { margin: 0, padding 0}
+
+
+.menuColor{	
+background-color: #F3FFBD;	
+}
+
 #mask{
     position: fixed;
     top: 0;

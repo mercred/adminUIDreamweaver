@@ -7,6 +7,7 @@
     <title>Admin Main Page</title>
     <!-- Bootstrap -->
 	<link href="css/bootstrap.css" rel="stylesheet">
+	  <link href="css/custom.css" rel="stylesheet">
 	<link href="css/bootstrap-3.3.7.css" rel="stylesheet" type="text/css">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -16,23 +17,21 @@
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
   </head>
-  <body onLoad="initFirebase()">
-	<div class="container" style="width: 100%">
+  <body onLoad="initializeApp()">
+	<div class="container-fluid">
       <header class="row">
         <div class="col-lg-12">
           <h1>Admin Firebase UI</h1>
         </div>
       </header>
-      <div class="row">
-        <div class="col-lg-12">
-          <ul class="nav nav-tabs">
-            <li role="presentation"><a href="category.html">Select category</a></li>
-            <li role="presentation"><a href="question.html">Find question</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="row">
-    <div class="col-lg-12">
+		
+		
+		
+		
+		
+		
+		<div class="row" id="loginMenuID" style="display: block; visibility: hidden">
+		 <div class="col-lg-12">
       <div class="row">
         <div class="col-lg-12">
         	
@@ -46,21 +45,43 @@
         	
         </div>
       </div>
+			 <div class="row">
+	   <div class="col-lg-12" id="inputErrors">      
+        	       </div> 	
+        </div>
       <div class="row">
         <div class="col-lg-3">
          	
               <button type="button" class="btn btn-default" onClick="Login()"> Login    
               </button>
-        </div>
-        <div class="col-lg-3">
-         	
-              <button type="button" class="btn btn-default" onClick="Logout()"> Logout    
-              </button>
-        </div>
+        </div>        
       </div>
     </div>
+			</div>
+		
+
+		
+      <div class="row menuColor" id="mainMenuID" style="visibility: hidden;">
+        <div class="col-lg-5">
+          <ul class="nav nav-tabs">
+            <li role="presentation"><a href="category.html">Select category</a></li>
+            <li role="presentation"><a href="question.html">Find question</a></li>
+          </ul>
+        </div>
+		  <div class="col-lg-7"></div>
+		   <div class="text-right">
+         	 <div id="currentUser"></div>
+              <button type="button" id="logoutButtonID" class="btn btn-default" onClick="Logout()"> Logout    
+              </button>
+			</div>
+        </div>
+		  <div class="row">
+    <div class="col-lg-12"> Iframe placeholder
       </div>
 	</div>
+      </div>
+      
+	
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 	<script src="js/jquery-1.11.3.min.js"></script>
 
@@ -72,48 +93,73 @@
 	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"> </script>
 	<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-auth.js"> </script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
+	<script src="js/validate.min.js"></script>
 	<script>
-		
-		function initFirebase(){
+		function initializeApp(){
 			var config = {
 			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
 			  databaseURL: "https://studymechanics.firebaseio.com",
-			storageBucket: "studymechanics.appspot.com",
+			  storageBucket: "studymechanics.appspot.com",
 			  authDomain: "studymechanics.firebaseapp.com",
 		  };
 		  firebase.initializeApp(config);
-			
-			 firebase.auth().onAuthStateChanged(function(user) {
-			  	 
-			  window.user = user;
-			  // Step 1:
-			  //  If no user, sign in anonymously with firebase.auth().signInAnonymously()
-			  //  If there is a user, log out out user details for debugging purposes.
-				 console.log(window.user);				 
-				 firebase.database().ref('Categories').child("Force").set(22);
-			});
+		  
+			//changes when we either logIn or logOut
+		  firebase.auth().onAuthStateChanged(function(user) {
+			  if(user==null){
+				  //we have been signed out
+				  console.log("Signed out");
+				  document.getElementById("loginMenuID").style.display="initial";
+				  document.getElementById("loginMenuID").style.visibility="visible";//change both visibility and display because otherwise we can see login menu for split second after change.
+				   document.getElementById("mainMenuID").style.visibility="hidden";
+				  		
+			  }
+			  else{
+				  document.getElementById("userPassword").value="";
+		           document.getElementById("userEmail").value="";				   
+		           window.user = user;
+				   $("#currentUser").html("User: "+user.email);
+				  document.getElementById("loginMenuID").style.display="none";
+				  document.getElementById("mainMenuID").style.visibility="hidden";
+				 document.getElementById("mainMenuID").style.visibility="visible";			  
+			  }
+			 
+		  });			
 			
 		}
+		
+		
 		
 		
 	  function Logout(){
 		firebase.auth().signOut()
 		 .catch(function (err) {
 		   // Handle errors
-		 });	
-			console.log("Signed OUT!");
+		 });			
 			
 		}
-	  function Login(){
+	  function Login(){ 
+		   $('#inputErrors').html("");
+		  var password=document.getElementById("userPassword").value;		  
+		  var email= document.getElementById("userEmail").value;
 		  
-		  var email = "studymechanicsapp@gmail.com";
-		  var password= "vUvUh6Ph8h+d";			
-		  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-			  // Handle Errors here.
-			  var errorCode = error.code;
-			  var errorMessage = error.message;
-			  console.log(errorMessage);			  
-			});	 
+		  var passwordValidation = validate.single(password, {presence: true});
+		  
+		  var emailValidation = validate.single(email, {presence: true, email: true});
+		 if(emailValidation!=undefined){			
+			  $('#inputErrors').html("Email "+emailValidation[0]);
+			   return;
+		  }  
+		  if(passwordValidation!=undefined){
+			  $('#inputErrors').html("Password "+passwordValidation[0]);
+			  password="";
+			  return;
+		  }
+		  
+		  
+		  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {			  
+			    $('#inputErrors').html(error.message);			  
+			});		  
 	  }
 	  </script>
   </body>

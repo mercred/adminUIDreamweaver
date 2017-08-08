@@ -1,4 +1,0 @@
-Engine: KaTeX.
-Inline formula:\\(ax^2 + bx + c = 0\\)
-Centered formula: $$\\sum_{i=0}^n i^2 = \\frac{(n^2+n)(2n+1)}{6}$$
-Links:<a href=\"https://www.w3schools.com/html/\">Visit our HTML tutorial</a>
