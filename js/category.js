@@ -70,8 +70,12 @@ function deleteCurrentCategory(){
 }
 function getCategoryData(category){
 	currentCategory= category;
-	var textHref="categoryQuestions.html#category="+currentCategory;
-	document.getElementById("displayQuestionsButton").href=textHref;	
+	
+	document.getElementById("displayQuestionsButton").addEventListener('click', (function(category) {
+							 	return function() {									window.parent.document.getElementById('contentIframeID').src="categoryQuestions.html#category="+category; 
+										
+									}
+						 	})(category));	
 	document.getElementById('name').innerHTML=currentCategory;
 	getCategoryNQuestions();
 	getCategoryBackgroundMaterialDB();		
