@@ -10,8 +10,6 @@ function loadCategories(){
   cleanElement("categories_list");  	
   document.getElementById("mainContainer").style.visibility="hidden";	
   document.getElementById("imagesContainer").style.visibility="hidden";
-	console.log("From category.js")
-	console.log(firebase);
   var queryCategories =  firebase.database().ref("Categories").orderByKey();   
   queryCategories.once("value").then(
     function(snapshot) {	    
@@ -122,10 +120,8 @@ var allImagesQuery= firebase.database().ref("questions/"+currentCategory+"/mater
 allImagesQuery.once("value").then(
       function(snapshot) {
 	  currentImageID=null;
-	  var html_list = document.getElementById("bg_images_list");
-      while (html_list.firstChild) {
-        html_list.removeChild(html_list.firstChild);
-      }	
+		  var html_list=document.getElementById("bg_images_list");
+	  cleanElement("bg_images_list");
 	  html_list.src="images/ImgResponsive_Placeholder.png";	  
       images={};
       snapshot.forEach(function(childSnapshot) {  
@@ -181,7 +177,6 @@ function deleteCurrentImageBG(){
       desertRef.delete().then(function() {
         firebase.database().ref('questions').child(currentCategory).child("material").child("imgs").child(currentImageID).set(null);
 		document.getElementById("bgImageId").src="images/ImgResponsive_Placeholder.png";
-		currentImageID=null;
 		getListOfBGImagesAndDisplayDB();		
       }).catch(function(error) {
         alert("Error occured during file deletion: "+ error);

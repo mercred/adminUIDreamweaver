@@ -1,6 +1,6 @@
 var firebaseRef;			
 function initializeApp(){
-				iFrameResize({log:false});
+		iFrameResize({log:false});
 			var config = {
 			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
 			  databaseURL: "https://studymechanics.firebaseio.com",
@@ -30,39 +30,7 @@ function initializeApp(){
 			  }
 			 
 		  });	
-				
-			
-				
-				
-				
-				
-			
 		}
-
-
-
-function resizeIFrameToFitContent( iFrame ) {
-	console.log("TRYING");
-    iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
-    iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		function Logout(){
 			firebase.auth().signOut()
 			 .catch(function (err) {
@@ -94,10 +62,12 @@ function resizeIFrameToFitContent( iFrame ) {
 			});		  
 	  }
 	  function onCategoryClick(){
-		   document.getElementById("contentIframeID").src="category.html";		  
+		   document.getElementById("contentIframeID").src="category.html";	
+		   document.getElementById("contentIframeID").style.display="block";
 	  }
 	  function onQuestionClick(){
-		   document.getElementById("contentIframeID").src="questionSearch.html";	  
+		   document.getElementById("contentIframeID").src="questionSearch.html";
+		  document.getElementById("contentIframeID").style.display="block";
 	  }	
 
 

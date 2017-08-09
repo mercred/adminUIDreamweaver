@@ -16,7 +16,7 @@ function downloadAndDisplayImage(ImageName,ImageHTML){
 		   currentImageID=ImageName;
 			 
   		 }).catch(function(error) {
-              alert("During downloading images following error occured: "+error);
+               console.log(error);
            });
 }
 function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
@@ -28,13 +28,11 @@ function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 		 }	
 	 console.log(ImageName);
 		 firebase.storage().ref(ImageName).getDownloadURL().then(function(url) {         
-    		 // url is the download URL for our image
-		   document.getElementById(ImageHTML).src = url;
-		   //currentImageID=ImageName;
-			 
+    		 document.getElementById(ImageHTML).src = url;
+		  		 
   		 }).catch(function(error) {
 			 console.log(error);
-              //alert("During downloading images following error occured: "+error);
+             
            });
 }
 
@@ -51,13 +49,3 @@ function returnImageName(existingArray,name){
    }
 }
 
-function uniqueID(){
-  function chr4(){
-    return Math.random().toString(16).slice(-4);
-  }
-  return chr4() + chr4() +
-    '-' + chr4() +
-    '-' + chr4() +
-    '-' + chr4() +
-    '-' + chr4() + chr4() + chr4();
-}
