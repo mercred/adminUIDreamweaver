@@ -1,12 +1,13 @@
-			function initializeApp(){
-				iFrameResize({log:true});
+var firebaseRef;			
+function initializeApp(){
+				iFrameResize({log:false});
 			var config = {
 			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
 			  databaseURL: "https://studymechanics.firebaseio.com",
 			  storageBucket: "studymechanics.appspot.com",
 			  authDomain: "studymechanics.firebaseapp.com",
 		  };
-		  firebase.initializeApp(config);
+		  firebaseRef=firebase.initializeApp(config);				
 		  
 			//changes when we either logIn or logOut
 		  firebase.auth().onAuthStateChanged(function(user) {

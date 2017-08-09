@@ -1,78 +1,30 @@
 // JavaScript Document
-	
-var config = {
-      apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
-      databaseURL: "https://studymechanics.firebaseio.com",
-	storageBucket: "studymechanics.appspot.com"
-  };
+
+var categories,images;
+var currentCategory,currentCategoryBGText,currentImageID;
 
 
-
-
-firebase.initializeApp(config);
-var email = "studymechanicsapp@gmail.com";
-var password= "vUvUh6Ph8h+d";			
-firebase.auth().signInWithEmailAndPassword(email, password);
-firebase.storage().ref().constructor.prototype.putFiles = function(files,reference) 
-		{ 
-		  var ref = this;
-		  const filesArr = [...files];
-		  return Promise.all(filesArr.map(function(file) {
-			var id=uniqueID();	
-			  //remove all whitespaces
-			  var solidName=file.name.replace(/\s+/, "");
-			initialName=solidName.substring(0, solidName.length - 4);
-
-			var name=returnImageName(Object.keys(bgImageList),initialName);		
-			firebase.database().ref(reference).child(name).set(id);	 
-			return ref.child(id).put(file);
-		  }));
-}	 
-  
-
-
-
-
-var categoriesList;
-var currentCategory,currentCategoryBGText;
-var bgImageList;
-
-
-	
-function showPopup() {
-    $("#mask").fadeTo(500, 0.25);
-    $("#popup").show();
-}
-function hidePopup(){
-	$("#popup").hide();
-    $("#mask").hide();
-	
-}
-function isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-}
+//____________________________________DISPLAY LIST OF CATEGORIES_______________________
 function loadCategories(){  
-  categoriesList=[];
-  var result_list = document.getElementById("categories_list");
-  while (result_list.firstChild) {
-      result_list.removeChild(result_list.firstChild);
- }		
+  categories=[];
+  cleanElement("categories_list");  	
   document.getElementById("mainContainer").style.visibility="hidden";	
   document.getElementById("imagesContainer").style.visibility="hidden";
+	console.log("From category.js")
+	console.log(firebase);
   var queryCategories =  firebase.database().ref("Categories").orderByKey();   
   queryCategories.once("value").then(
     function(snapshot) {	    
     	snapshot.forEach(function(childSnapshot) {		      
           var key = childSnapshot.key;
-		  categoriesList.push(key);
+		  categories.push(key);
 		  addCategoryToList(key);		 
         });	 
 	    
     });
 }	
 function addCategoryToList(categoryName){
-	var entry = document.createElement('li');	
-	//entry.setAttribute("id",key+inner_key);
+	var entry = document.createElement('li');		
 	entry.addEventListener('click', (function(category) {
 			return function() {
 					getCategoryData(category);
@@ -85,10 +37,14 @@ function addCategoryToList(categoryName){
 	entry.appendChild(a);	
 	document.getElementById("categories_list").appendChild(entry);	
 }
+//________________________________________END OF DISPLAY LIST OF CATEGORIES_____________
+
+
+//____________________________________OPERATIONS ON CATEGORY___________________________
 function createEmptyCategory(){
   var categoryName = document.getElementById("categoryName").value;
   document.getElementById("categoryName").value=null;
-  if(categoriesList.contains(categoryName)){
+  if(categories.contains(categoryName)){
   	alert("Category with this name already exists!");  
   }else{
   		if(categoryName==null|| categoryName==""){
@@ -127,27 +83,26 @@ function getCategoryData(category){
 	document.getElementById("bgImageId").src="images/ImgResponsive_Placeholder.png";
  
 }
-	
+//________________________________________END OF OPERATIONS ON CATEGORY___________________
+
+//display number of questions	
 function getCategoryNQuestions(){
-	//display number of questions
 	var getCategoryQuestionCount=firebase.database().ref('Categories').child(currentCategory);
-	getCategoryQuestionCount.once("value").then(
-      function(snapshot) {
-		 
+	getCategoryQuestionCount.on("value", function(snapshot) {		 
   		 document.getElementById("nQuestions").innerHTML="Number of questions: "+snapshot.val();
       });
 	
 }	
+
+//_______________________________________BACKGROUND MATERIAL TEXT__________________________
 function getCategoryBackgroundMaterialDB(){
   
   var getCategoryBackgroundMaterial =  firebase.database().ref("questions/"+currentCategory+"/material/text");  
-    getCategoryBackgroundMaterial.once("value").then(
-      function(snapshot) {  	    
+    getCategoryBackgroundMaterial.on("value",function(snapshot) {  	    
   	     currentCategoryBGText = snapshot.val();			  
   		 document.getElementById("textarea").value=currentCategoryBGText;		 
       });	  		 
-}	 
-
+}
 function saveBMChanges(){
  var bmText = document.getElementById("textarea").value;
  updateCategoryMaterialDB(currentCategory,bmText);
@@ -159,21 +114,23 @@ document.getElementById("textarea").value=currentCategoryBGText;
 function updateCategoryMaterialDB(categoryName,material){
   firebase.database().ref('questions').child(categoryName).child('material').child('text').set(material);  
 }		
-var currentImageKey;
+//____________________________________________________END OF BACKGROUND MATERIAL TEXT______
+
+//_______________________________________OPERATIONS WITH IMAGES__________________________
 function getListOfBGImagesAndDisplayDB(){
 var allImagesQuery= firebase.database().ref("questions/"+currentCategory+"/material/imgs");
 allImagesQuery.once("value").then(
       function(snapshot) {
-	  currentImageKey=null;
+	  currentImageID=null;
 	  var html_list = document.getElementById("bg_images_list");
       while (html_list.firstChild) {
         html_list.removeChild(html_list.firstChild);
       }	
 	  html_list.src="images/ImgResponsive_Placeholder.png";	  
-      bgImageList={};
+      images={};
       snapshot.forEach(function(childSnapshot) {  
 		  var valueBGImage=childSnapshot.val();
-          bgImageList[childSnapshot.key]=valueBGImage;
+          images[childSnapshot.key]=valueBGImage;
 		  var entry = document.createElement('li');		
 	entry.addEventListener('click', (function(imageVal) {
 			return function() {
@@ -195,8 +152,6 @@ allImagesQuery.once("value").then(
 function displayImageBG(imageVal){		
 	downloadAndDisplayImage(imageVal,"bgImageId");		
 }	
-
-
 function uploadImagesBG(files){
 
  for(var i=0; i<files.length;i++){
@@ -217,34 +172,91 @@ function uploadFilesDB(files,reference){
 	  }).catch(function(error) {
 		// If any task fails, handle this
 	  });
-}
-
-
-
-	
+}	
 function deleteCurrentImageBG(){
-  if(currentImageKey==null||currentImageKey==''){alert("Please select image from the list below.");return;}
-  var desertRef = firebase.storage().ref(bgImageList[currentImageKey]);
+  if(currentImageID==null||currentImageID==''){alert("Please select image from the list below.");return;}
+  var desertRef = firebase.storage().ref(images[currentImageID]);
 
       // Delete the file
       desertRef.delete().then(function() {
-        firebase.database().ref('questions').child(currentCategory).child("material").child("imgs").child(currentImageKey).set(null);
+        firebase.database().ref('questions').child(currentCategory).child("material").child("imgs").child(currentImageID).set(null);
 		document.getElementById("bgImageId").src="images/ImgResponsive_Placeholder.png";
-		currentImageKey=null;
+		currentImageID=null;
 		getListOfBGImagesAndDisplayDB();		
       }).catch(function(error) {
         alert("Error occured during file deletion: "+ error);
       });  
 }
-	
+//____________________________________________________OPERATIONS WITH IMAGES_END______________
 
-Array.prototype.contains = function(obj) {
-    var i = this.length;
-    while (i--) {
-        if (this[i] === obj) {
-            return true;
-        }
-    }
-    return false;
+//____________________________________________________PREVIEW WINDOW__________________________
+var modal = document.getElementById('myModal');
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+			btn.style.display="hidden";
+			modal.style.display = "block";
+			var myNode = document.getElementById("modalBodyID");
+		while (myNode.firstChild) {
+			myNode.removeChild(myNode.firstChild);
+		}
+			parseComplexText(currentCategoryBGText,"modalBodyID");			
+		 }
+span.onclick = function() {
+        modal.style.display = "none";
+		btn.style.display="visible";
 }
-
+function parseComplexText(text,parentID){
+	
+		var res;
+		var pattern =new RegExp("img\\d+.*");
+		var mainString="";
+	    var splitString=text.split(" ");
+		for (i = 0; i < splitString.length; i++) {
+			res=pattern.exec(splitString[i]);
+			if(res!=null&&res!=undefined){
+				//add div with current text
+				if(mainString!=""&&mainString!=null){
+					insertText(mainString,parentID);					
+					mainString="";
+				}
+				//insert image	
+				var imgName=images[splitString[i]];				
+				//get URL from name				
+				insertImage(imgName,parentID );
+				}else{
+					mainString+=" "+splitString[i];
+				}		
+		}
+		if(mainString!=""&&mainString!=null){
+			
+			insertText(mainString,parentID);
+		}
+		renderMathInElement(document.getElementById(parentID));				
+	}
+function insertText(text,parentElementID){
+		var rowDiv = document.createElement("div");
+		rowDiv.className="row";
+		var colDiv=document.createElement("div");
+		colDiv.className="col-lg-12";
+		colDiv.innerHTML=text;		
+		rowDiv.appendChild(colDiv);	
+		document.getElementById(parentElementID).appendChild(rowDiv);		
+	}
+function insertImage(imageURL,parentElementID){
+		var rowDiv = document.createElement("div");
+		rowDiv.className="row";
+		var colDiv=document.createElement("div");
+		rowDiv.className="col-lg-12";
+		
+		var image = document.createElement("img");
+		image.id=imageURL+"render";
+		image.className="img-responsive";
+		image.alt="Placeholder image";		
+		colDiv.appendChild(image);	
+		rowDiv.appendChild(colDiv);	
+		document.getElementById(parentElementID).appendChild(rowDiv);
+		downloadAndDisplayImageDirectly(imageURL,image.id)
+		
+	}
+//end of preview window

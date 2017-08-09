@@ -7,13 +7,13 @@ function downloadAndDisplayImage(ImageName,ImageHTML){
 			 return;
 		 }
 	
-	     var ImageStorageName=bgImageList[ImageName];
+	     var ImageStorageName=images[ImageName];
 	
 		 firebase.storage().ref(ImageStorageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   var img = document.getElementById(ImageHTML);
            img.src = url;
-		   currentImageKey=ImageName;
+		   currentImageID=ImageName;
 			 
   		 }).catch(function(error) {
               alert("During downloading images following error occured: "+error);
@@ -30,7 +30,7 @@ function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 		 firebase.storage().ref(ImageName).getDownloadURL().then(function(url) {         
     		 // url is the download URL for our image
 		   document.getElementById(ImageHTML).src = url;
-		   //currentImageKey=ImageName;
+		   //currentImageID=ImageName;
 			 
   		 }).catch(function(error) {
 			 console.log(error);
