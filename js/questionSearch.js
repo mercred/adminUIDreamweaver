@@ -61,9 +61,18 @@ function getQueryResults(){
 		function displayQuestionText(category,question,text){
 			
 			document.getElementById("result_text_div").style.visibility="visible";			
-			document.getElementById("result_text").innerHTML=text;
+			document.getElementById("result_text").innerHTML=text;			
 			var textHref="questionSearchResult.html#category="+category+"&question="+question;
-			document.getElementById("displayQuestionButton").href=textHref;		
+			document.getElementById("displayQuestionButton").addEventListener('click', (function(category,question) {
+							 	return function() {
+									window.parent.document.getElementById('contentIframeID').src="questionFragment.html#category="+category+"&question="+question; 
+										
+									}
+						 	})(category,question));
+			
+			
+			
+				
 		}
 	  
 	  
