@@ -25,14 +25,14 @@
             </div>
           </div>
      
-      <div class="row">
+      <div class="row" style="background-color: red;" >
         <div class="col-lg-2" id="questionDivID">
         	 <label id="title">List of Questions:</label>
             	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="questions_list">
           </ul>
         </div>
-        <div class="col-lg-10" id="iFrameID" style="border:5px; width: 100%">
-        	
+        <div class="col-lg-10" id="iFrameID" style="border:5px; background-color: yellow; ">
+        	<iframe src="" style="width: 100%;" scrolling="auto"  id="questionsIFrameId"></iframe>        	
         </div>
       </div>
     </div>
@@ -45,7 +45,8 @@
 	<!-- Include all compiled plugins (below), or include individual files as needed --> 
 	<script src="js/libraries/bootstrap.js"></script>
 	<script src="js/libraries/iframe_resize/iframeResizer.contentWindow.min.js"></script>
-	<script src="js/libraries/iframe_resize/iframeResizer.min.js"></script>
+	<script src="js/libraries/iframe_resize/iframeResizer.min.js"></script>	
+	
 	<script>var firebase=parent.firebaseRef;
 	 var firebaseRef=firebase;</script>
 	<script src="js/utility/utility.js"></script>
@@ -54,17 +55,12 @@
 	
 	
 	<script>
+		iFrameResize({log:true});
 		var currentCategory;
 		var questionList=[];
 		function displayQuestions(){			
 			questionList=[];
-			
-			var mainList=document.getElementById("questions_list");			
-			while (mainList.firstChild) {
-				mainList.removeChild(mainList.firstChild);
-			}	
-			
-			
+			cleanElement("questions_list");
 			var url = window.location.href;
 			currentCategory=getParameter(url,"category");			
 			document.getElementById("title").innerHTML="Questions of category "+currentCategory;
@@ -79,7 +75,7 @@
 
 				});
 		}	
-		function refreshQuestionList(){
+function refreshQuestionList(){
 			questionList=[];
 			var mainList=document.getElementById("questions_list");			
 			while (mainList.firstChild) {
@@ -93,11 +89,8 @@
 					  questionList.push(key);
 					  addQuestionToList(key);		 
 					});	 
-
-				});
-			
-		}
-		
+				});			
+		}	
 		
 function addQuestionToList(questionName){
 		var entry = document.createElement('li');		
@@ -115,29 +108,9 @@ function addQuestionToList(questionName){
 }
 		
 		function getQuestionData(questionName){ 
-			
-			//delete previous frame if exists
-			var myNode = document.getElementById("iFrameID");
-				while (myNode.firstChild) {
-					myNode.removeChild(myNode.firstChild);
-				}
 		  var category=currentCategory;			  
 		  var question=questionName;
-			
-		  var frameSrc="questionFragment.html#category="+category+"&question="+question;			
-			var mainFrame = document.createElement("iframe");
-			mainFrame.frameBorder = 0;			
-			mainFrame.width="100%";
-			mainFrame.id="questionIFrameId";
-			mainFrame.src=frameSrc;	
-			mainFrame.addEventListener("load", function(){
-				refreshQuestionList();
-				$("#questionIFrameId").iFrameResize();
-			
-				
-   
-});document.getElementById("iFrameID").appendChild(mainFrame); 
-				
+		  document.getElementById("questionsIFrameId").src="questionFragment.html#category="+category+"&question="+question; 
 	  }
 		
 	function createEmptyQuestion(){
