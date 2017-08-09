@@ -62,7 +62,7 @@ function getQueryResults(){
 			
 			document.getElementById("result_text_div").style.visibility="visible";			
 			document.getElementById("result_text").innerHTML=text;
-			var textHref="single_question.html#category="+category+"&question="+question;
+			var textHref="questionSearchResult.html#category="+category+"&question="+question;
 			document.getElementById("displayQuestionButton").href=textHref;		
 		}
 	  

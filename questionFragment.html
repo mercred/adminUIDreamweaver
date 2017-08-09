@@ -52,30 +52,13 @@
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 <script src="js/libraries/jquery-1.11.3.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>  
-<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
- <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-storage.js"></script>
- <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-auth.js"></script> 
  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+ <script src="js/libraries/iframe_resize/iframeResizer.contentWindow.min.js"></script>
+ <script>var firebase=parent.firebaseRef;</script>
  <script src="js/utility/utility.js"></script>
  <script src="js/utility/imageUpload.js"></script>
- <script>
-	 // <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> 
-
-  
-	 
-  var config = {
-      apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
-      databaseURL: "https://studymechanics.firebaseio.com" ,	  
-	  storageBucket: "studymechanics.appspot.com",
-	  authDomain: "studymechanics.firebaseapp.com"
-  };
-	
-	 firebase.initializeApp(config);
-	 loginAfterInit(); 
-	 
-	 
+ 
+ <script>	 
 	 var category;
 	 var question;
 	 var answerToImage={};
@@ -358,11 +341,10 @@
 	 }
 	 
 	
-	 function deleteQuestion(){
+function deleteQuestion(){
 		 
 	
 	var decreaseCounter=firebase.database().ref('Categories').child(category);
-
 	decreaseCounter.once("value").then(
       function(snapshot) {
 		
@@ -371,28 +353,9 @@
 		 window.location = 'about:blank';
   		 
       });	
-     //firebase.database().ref('current_time').once('value').then(function(snapshot) {
-}
-		 
-		 
-		 
-		 
+    }
 	
-		 
-		 
-	/*delete all images of the question
-		  var category;
-	 var question;
-	 var answerToImage={};
-	 var answerList=[];
-	 var questionImage;
-	 */
-		 	 
-	//display nothing
-	     
-		 
-	
-	function displayQuestion(){
+	 function displayQuestion(){
 		 
 		var containerID="mainContainer";
 		category=getParameter(window.location.href ,"category");
