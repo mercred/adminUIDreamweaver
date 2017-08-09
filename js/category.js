@@ -10,7 +10,7 @@ function loadCategories(){
   cleanElement("categories_list");  	
   document.getElementById("mainContainer").style.visibility="hidden";	
   document.getElementById("imagesContainer").style.visibility="hidden";
-  var queryCategories =  firebase.database().ref("Categories").orderByKey();   
+  var queryCategories =  firebase.database().ref("Categories"+parent.languageRef).orderByKey();   
   queryCategories.once("value").then(
     function(snapshot) {	    
     	snapshot.forEach(function(childSnapshot) {		      
@@ -55,16 +55,16 @@ function createEmptyCategory(){
   }
 }
 function createEmptyCategoryDB(categoryName) {
-  firebase.database().ref('Categories').child(categoryName).set(0);
-  firebase.database().ref('questions').child(categoryName).set({
+  firebase.database().ref('Categories'+parent.languageRef).child(categoryName).set(0);
+  firebase.database().ref('questions'+parent.languageRef).child(categoryName).set({
   material:"Empty",
   questions:"Empty"  
   });
 }
 function deleteCurrentCategory(){
  
-  firebase.database().ref('Categories').child(currentCategory).set(null);
-  firebase.database().ref('questions').child(currentCategory).set(null);
+  firebase.database().ref('Categories'+parent.languageRef).child(currentCategory).set(null);
+  firebase.database().ref('questions'+parent.languageRef).child(currentCategory).set(null);
   currentCategory=null;
   loadCategories();
 }
@@ -89,7 +89,7 @@ function getCategoryData(category){
 
 //display number of questions	
 function getCategoryNQuestions(){
-	var getCategoryQuestionCount=firebase.database().ref('Categories').child(currentCategory);
+	var getCategoryQuestionCount=firebase.database().ref('Categories'+parent.languageRef).child(currentCategory);
 	getCategoryQuestionCount.on("value", function(snapshot) {		 
   		 document.getElementById("nQuestions").innerHTML="Number of questions: "+snapshot.val();
       });
@@ -99,7 +99,7 @@ function getCategoryNQuestions(){
 //_______________________________________BACKGROUND MATERIAL TEXT__________________________
 function getCategoryBackgroundMaterialDB(){
   
-  var getCategoryBackgroundMaterial =  firebase.database().ref("questions/"+currentCategory+"/material/text");  
+  var getCategoryBackgroundMaterial =  firebase.database().ref("questions"+parent.languageRef+'/'+currentCategory+"/material/text");  
     getCategoryBackgroundMaterial.on("value",function(snapshot) {  	    
   	     currentCategoryBGText = snapshot.val();			  
   		 document.getElementById("textarea").value=currentCategoryBGText;		 
@@ -114,13 +114,13 @@ function discardBMChanges(){
 document.getElementById("textarea").value=currentCategoryBGText;
 }
 function updateCategoryMaterialDB(categoryName,material){
-  firebase.database().ref('questions').child(categoryName).child('material').child('text').set(material);  
+  firebase.database().ref('questions'+parent.languageRef).child(categoryName).child('material').child('text').set(material);  
 }		
 //____________________________________________________END OF BACKGROUND MATERIAL TEXT______
 
 //_______________________________________OPERATIONS WITH IMAGES__________________________
 function getListOfBGImagesAndDisplayDB(){
-var allImagesQuery= firebase.database().ref("questions/"+currentCategory+"/material/imgs");
+var allImagesQuery= firebase.database().ref("questions"+parent.languageRef+'/'+currentCategory+"/material/imgs");
 allImagesQuery.once("value").then(
       function(snapshot) {
 	  currentImageID=null;
@@ -162,7 +162,7 @@ function uploadImagesBG(files){
     		  return;
 		  }  
   }    
-  uploadFilesDB(files,"questions/"+currentCategory+"/material/imgs");
+  uploadFilesDB(files,"questions"+parent.languageRef+'/'+currentCategory+"/material/imgs");
 }
 function uploadFilesDB(files,reference){
 		
@@ -179,7 +179,7 @@ function deleteCurrentImageBG(){
 
       // Delete the file
       desertRef.delete().then(function() {
-        firebase.database().ref('questions').child(currentCategory).child("material").child("imgs").child(currentImageID).set(null);
+        firebase.database().ref('questions'+parent.languageRef).child(currentCategory).child("material").child("imgs").child(currentImageID).set(null);
 		document.getElementById("bgImageId").src="images/ImgResponsive_Placeholder.png";
 		getListOfBGImagesAndDisplayDB();		
       }).catch(function(error) {

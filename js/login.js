@@ -1,5 +1,21 @@
-var firebaseRef;			
+var firebaseRef;	
+var languageRef;
 function initializeApp(){
+	
+		languageRef="";
+	    document.getElementById("selectId").onchange = function() {
+			
+			if(this.value=="English") {
+			   languageRef="";
+				document.getElementById("contentIframeID").src="";
+			   }
+			   else{
+			   	languageRef="-de";
+				   document.getElementById("contentIframeID").src="";
+			   }
+			console.log(languageRef);
+			
+		};
 		iFrameResize({log:false});
 			var config = {
 			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
@@ -22,6 +38,8 @@ function initializeApp(){
 				  document.getElementById("userPassword").value="";
 		           document.getElementById("userEmail").value="";				   
 		           window.user = user;
+				  languageRef="";
+				  $("#selectId").val("English");
 				   $("#currentUser").html("User: "+user.email);
 				  document.getElementById("loginMenuID").style.display="none";
 				  document.getElementById("mainMenuID").style.visibility="hidden";
