@@ -1,4 +1,5 @@
 			function initializeApp(){
+				iFrameResize({log:true});
 			var config = {
 			  apiKey: "AIzaSyCwYIYau4w3LKZ4EuKZPdBIfbdmg1JsWvQ", 	   
 			  databaseURL: "https://studymechanics.firebaseio.com",
@@ -10,8 +11,7 @@
 			//changes when we either logIn or logOut
 		  firebase.auth().onAuthStateChanged(function(user) {
 			  if(user==null){
-				  //we have been signed out
-				  console.log("Signed out");
+				  //we have been signed out				  
 				  document.getElementById("loginMenuID").style.display="initial";
 				  document.getElementById("loginMenuID").style.visibility="visible";//change both visibility and display because otherwise we can see login menu for a split second after change.
 				   document.getElementById("mainMenuID").style.visibility="hidden";
@@ -28,9 +28,40 @@
 				   document.getElementById("contentIframeID").src="about:blank";
 			  }
 			 
-		  });			
+		  });	
+				
+			
+				
+				
+				
+				
 			
 		}
+
+
+
+function resizeIFrameToFitContent( iFrame ) {
+	console.log("TRYING");
+    iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
+    iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		function Logout(){
 			firebase.auth().signOut()
 			 .catch(function (err) {
