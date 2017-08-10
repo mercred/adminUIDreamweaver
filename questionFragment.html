@@ -13,7 +13,7 @@
 
   </head>
   <body onLoad="displayQuestion()">
-<div class="container-fluid" id="mainContainer">
+<div class="container-fluid" id="mainContainer" style="visibility: hidden">
  
   <div class="row" style="border: 2px solid black" id="questionRowID">
     <div class="col-lg-8" >
@@ -336,7 +336,7 @@
 	
 function deleteQuestion(){
 		 
-	
+	parent.currentQuestion=null;
 	var decreaseCounter=firebase.database().ref('Categories'+parent.languageRef).child(category);
 	decreaseCounter.once("value").then(
       function(snapshot) {
@@ -367,16 +367,25 @@ function deleteQuestion(){
 	 function displayQuestion(){
 		 
 		var containerID="mainContainer";
-		category=getParameter(window.location.href ,"category");
-	    question=getParameter(window.location.href ,"question");
+		 if(parent.name=="CategoryQuestions")
+			 {
+		category=parent.currentCategory;
+		 question=parent.currentQuestion;
+		 if(question==null) return;
+			 } else{
+				 	category=getParameter(window.location.href ,"category");
+	                question=getParameter(window.location.href ,"question");
+			 }
+	
+		
 		var mainCont=document.getElementById("mainContainer");
 		
 		while (mainCont.lastChild.id !== 'questionRowID') {
 			mainCont.removeChild(mainCont.lastChild);
 		}
 		answerToImage={};
-	    answerList=[];
-		
+	    answerList=[];	
+		 
 		var oneQuestionQuery= firebase.database().ref("questions"+parent.languageRef).child(category).child("questions").child(question).orderByKey();
   oneQuestionQuery.once("value").then(
         function(snapshot) {   	  
@@ -414,7 +423,8 @@ function deleteQuestion(){
 				
 			}
 			 
-			generateCreateButton(containerID);			
+			generateCreateButton(containerID);
+			document.getElementById("mainContainer").style.visibility="visible";
 		}
 			
     );//end of oneQuestionQuery.once("value").then 

@@ -33,7 +33,7 @@
           </ul>
         </div>
         <div class="col-lg-10" id="iFrameID" style="border:5px;">
-        	<iframe src="" style="width: 100%;" scrolling="auto"  id="questionsIFrameId"></iframe>        	
+        	<iframe src="questionFragment.html" style="width: 100%;" scrolling="auto"  id="questionsIFrameId"></iframe>        	
         </div>
       </div>
     </div>
@@ -58,6 +58,7 @@
 	<script>
 		iFrameResize({log:false});
 		var currentCategory;
+		var currentQuestion=null;
 		var name="CategoryQuestions";
 		var questionList=[];
 		var languageRef=parent.languageRef;
@@ -80,6 +81,7 @@
 				});
 		}	
 function refreshQuestionList(){
+	        currentQuestion=null;
 			questionList=[];
 			var mainList=document.getElementById("questions_list");			
 			while (mainList.firstChild) {
@@ -98,11 +100,12 @@ function refreshQuestionList(){
 		
 function addQuestionToList(questionName){
 		var entry = document.createElement('li');		
-		entry.addEventListener('click', (function(question,category) {
+		entry.addEventListener('click', (function(question) {
 				return function() {
-					  document.getElementById("questionsIFrameId").src="questionFragment.html#category="+category+"&question="+question; 
+					currentQuestion=question;
+					document.getElementById('questionsIFrameId').src = document.getElementById('questionsIFrameId').src;				 
 					}
-			})(questionName,currentCategory));						
+			})(questionName));						
 
 		var a = document.createElement('a');  						 
 		a.appendChild(document.createTextNode(questionName));	
