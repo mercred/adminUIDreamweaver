@@ -63,9 +63,24 @@ function createEmptyCategoryDB(categoryName) {
 }
 function deleteCurrentCategory(){
  
-  firebase.database().ref('Categories'+parent.languageRef).child(currentCategory).set(null);
-  firebase.database().ref('questions'+parent.languageRef).child(currentCategory).set(null);
+  
   currentCategory=null;
+	//delete images of bgMaterial
+	  if (typeof images != "undefined")
+	 {
+	   for (var key in images) {
+			if (images.hasOwnProperty(key)) {
+				 firebase.storage().ref(images[key]).delete();
+			}
+	   }
+	 }
+	//delete images of all questions/answerOptions
+	//delete category at last
+	firebase.database().ref('Categories'+parent.languageRef).child(currentCategory).set(null);
+  firebase.database().ref('questions'+parent.languageRef).child(currentCategory).set(null);
+	
+	
+	
   loadCategories();
 }
 function getCategoryData(category){
@@ -79,7 +94,7 @@ function getCategoryData(category){
 	document.getElementById('name').innerHTML=currentCategory;
 	getCategoryNQuestions();
 	getCategoryBackgroundMaterialDB();		
-	getListOfBGImagesAndDisplayDB(); 
+	getListOfBGImagesAndDisplayDB();	
 	document.getElementById("mainContainer").style.visibility="visible";	
     document.getElementById("imagesContainer").style.visibility="visible";
 	document.getElementById("bgImageId").src="images/ImgResponsive_Placeholder.png";
