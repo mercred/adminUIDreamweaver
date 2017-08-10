@@ -3,6 +3,7 @@ var languageRef;
 function initializeApp(){
 	
 		languageRef="";
+	var name="Login";
 	    document.getElementById("selectId").onchange = function() {
 			
 			if(this.value=="English") {

@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-Equiv="Cache-Control" Content="no-cache" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Main Page</title>
     <!-- Bootstrap -->
@@ -57,6 +58,7 @@
 	<script>
 		iFrameResize({log:false});
 		var currentCategory;
+		var name="CategoryQuestions";
 		var questionList=[];
 		var languageRef=parent.languageRef;
 		function displayQuestions(){			
@@ -96,11 +98,11 @@ function refreshQuestionList(){
 		
 function addQuestionToList(questionName){
 		var entry = document.createElement('li');		
-		entry.addEventListener('click', (function(questionName) {
+		entry.addEventListener('click', (function(question,category) {
 				return function() {
-						getQuestionData(questionName);
+					  document.getElementById("questionsIFrameId").src="questionFragment.html#category="+category+"&question="+question; 
 					}
-			})(questionName));						
+			})(questionName,currentCategory));						
 
 		var a = document.createElement('a');  						 
 		a.appendChild(document.createTextNode(questionName));	
@@ -109,12 +111,10 @@ function addQuestionToList(questionName){
 		document.getElementById("questions_list").appendChild(entry);	
 }
 		
-		function getQuestionData(questionName){ 
-		  var category=currentCategory;			  
-		  var question=questionName;
-		  document.getElementById("questionsIFrameId").src="questionFragment.html#category="+category+"&question="+question; 
-	  }
-		
+		function createIframe(){
+			
+			
+		}
 	function createEmptyQuestion(){
 		  var questionName = document.getElementById("questionName").value;
 		  document.getElementById("questionName").value=null;

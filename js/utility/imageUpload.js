@@ -26,7 +26,7 @@ function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 			 //no such file exists
 			 return;
 		 }	
-	 console.log(ImageName);
+	 
 		 firebase.storage().ref(ImageName).getDownloadURL().then(function(url) {         
     		 document.getElementById(ImageHTML).src = url;
 		  		 

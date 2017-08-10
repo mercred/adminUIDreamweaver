@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta http-Equiv="Cache-Control" Content="no-cache" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Untitled Document</title>
@@ -297,13 +298,11 @@
 		document.getElementById(containerID).appendChild(rowDiv);
 		downloadAndDisplayImageDirectly(imageName,ansUniqName+"image");
 			 
-	 }
-	 
+	 }	 
 	 function saveAnswerText(UniqName){
 		  var answerText = document.getElementById(UniqName+"text").value;		  firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(UniqName).child('text').set(answerText);	 
-	 }
-	 
-	  function saveQuestionText(){		  
+	 }	 
+	 function saveQuestionText(){		  
 		  var questionText = document.getElementById("qTxtID").value;		  firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('text').set(questionText);	 
 	 }
 	 function uploadQImages(files){
@@ -344,10 +343,26 @@ function deleteQuestion(){
 		
 		 decreaseCounter.set(parseInt(snapshot.val())-1);
 		 firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).set(null);
-		 window.location = 'about:blank';
+		  if(parent.name=="CategoryQuestions"){
+			  parent.document.getElementById("questionsIFrameId").src="";
+			  parent.refreshQuestionList();
+			  
+		  } else{
+			  
+			  window.location = 'about:blank';
+		  }
+		 
   		 
       });	
-    }
+	    //delete question image
+	   firebase.storage().ref(questionImage).delete(); 
+       //delete images of all answer options
+	   for (var key in answerToImage) {
+			if (answerToImage.hasOwnProperty(key)) {
+				 firebase.storage().ref(answerToImage[key]).delete();
+			}
+}
+	}
 	
 	 function displayQuestion(){
 		 
@@ -398,10 +413,12 @@ function deleteQuestion(){
 				generateAnswerClean(key,properties["text"],properties["img"],properties["isCorrect"],containerID);			
 				
 			}
+			 
 			generateCreateButton(containerID);			
 		}
 			
     );//end of oneQuestionQuery.once("value").then 
+		
 	 }//end of function displayQuestion()
 	  function getParentUrl() {
 		var isInIframe = (parent !== window),
