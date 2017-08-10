@@ -345,7 +345,7 @@ function deleteQuestion(){
 		 firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).set(null);
 		  if(parent.name=="CategoryQuestions"){
 			  parent.document.getElementById("questionsIFrameId").src="";
-			  parent.refreshQuestionList();
+			  parent.displayQuestions();
 			  
 		  } else{
 			  

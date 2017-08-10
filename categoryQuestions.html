@@ -64,6 +64,7 @@
 		var languageRef=parent.languageRef;
 		function displayQuestions(){			
 			questionList=[];
+			var currentQuestion=null;
 			cleanElement("questions_list");
 			var url = window.location.href;
 			currentCategory=getParameter(url,"category");			
@@ -103,7 +104,8 @@ function addQuestionToList(questionName){
 		entry.addEventListener('click', (function(question) {
 				return function() {
 					currentQuestion=question;
-					document.getElementById('questionsIFrameId').src = document.getElementById('questionsIFrameId').src;				 
+					document.getElementById('questionsIFrameId').src = "questionFragment.html";
+					//"document.getElementById('questionsIFrameId').src";				 
 					}
 			})(questionName));						
 
