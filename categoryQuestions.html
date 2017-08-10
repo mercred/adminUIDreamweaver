@@ -55,16 +55,18 @@
 	
 	
 	<script>
-		iFrameResize({log:true});
+		iFrameResize({log:false});
 		var currentCategory;
 		var questionList=[];
+		var languageRef=parent.languageRef;
 		function displayQuestions(){			
 			questionList=[];
 			cleanElement("questions_list");
 			var url = window.location.href;
 			currentCategory=getParameter(url,"category");			
 			document.getElementById("title").innerHTML="Questions of category "+currentCategory;
-			var queryCategories =  firebase.database().ref("questions").child(currentCategory).child("questions").orderByKey();   
+			
+			var queryCategories =  firebase.database().ref("questions"+parent.languageRef).child(currentCategory).child("questions").orderByKey();   
 			  queryCategories.once("value").then(
 				function(snapshot) {	    
 					snapshot.forEach(function(childSnapshot) {		      
@@ -81,7 +83,7 @@ function refreshQuestionList(){
 			while (mainList.firstChild) {
 				mainList.removeChild(mainList.firstChild);
 			}			
-			var queryCategories =  firebase.database().ref("questions").child(currentCategory).child("questions").orderByKey();   
+			var queryCategories =  firebase.database().ref("questions"+parent.languageRef).child(currentCategory).child("questions").orderByKey();   
 			  queryCategories.once("value").then(
 				function(snapshot) {	    
 					snapshot.forEach(function(childSnapshot) {		      
@@ -124,7 +126,7 @@ function addQuestionToList(questionName){
 				}
 				else{
 			  createEmptyQuestionDB(questionName);
-    var getCategoryQuestionCount=firebase.database().ref('Categories').child(currentCategory);
+    var getCategoryQuestionCount=firebase.database().ref('Categories'+parent.languageRef).child(currentCategory);
 	getCategoryQuestionCount.once("value").then(
       function(snapshot) {
 		 getCategoryQuestionCount.set(parseInt(snapshot.val())+1);
@@ -137,17 +139,13 @@ function addQuestionToList(questionName){
 function createEmptyQuestionDB(questionName) {
 	  //firebase.database().ref('Categories').child(questionName).set(0);
 	console.log(currentCategory+" "+questionName);
-	  firebase.database().ref('questions').child(currentCategory).child("questions").child(questionName).set({
+	  firebase.database().ref('questions'+parent.languageRef).child(currentCategory).child("questions").child(questionName).set({
 	  		img:"",
 		  	questionId:questionName,
 		  	answers:"",  
 		  	text:"empty" 
 	  });
 }	
-		
-		
-		
 	</script>
-	
   </body>
 </html>

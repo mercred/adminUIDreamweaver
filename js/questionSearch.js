@@ -12,7 +12,7 @@ function getQueryResults(){
 			cleanElement("questions_list");
 			var result_list = document.getElementById("questions_list");			
 							
-			var queryCategories =firebase.database().ref("questions").orderByKey();		
+			var queryCategories =firebase.database().ref("questions"+parent.languageRef).orderByKey();		
 		    queryCategories.once("value").then(
 			function(snapshot) {	
 				console.log(snapshot.key);
@@ -68,12 +68,7 @@ function getQueryResults(){
 									window.parent.document.getElementById('contentIframeID').src="questionFragment.html#category="+category+"&question="+question; 
 										
 									}
-						 	})(category,question));
-			
-			
-			
-				
-		}
+						 	})(category,question));}
 	  
 	  
 	

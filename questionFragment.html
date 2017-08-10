@@ -72,15 +72,15 @@
 				var text=String(uniqueID());			
 				
 				//create new question option here and reload page
-				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('img').set("");	
+				firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(text).child('img').set("");	
 			  if(answerList.length==0){
 				  console.log("Creating first answer option for this question");
-				  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(true);
+				  firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(true);
 			  } else{
-				   firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(false);				  
+				   firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(text).child('isCorrect').set(false);				  
 			  }
 				
-				firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(text).child('text').set("Empty");
+				firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(text).child('text').set("Empty");
 				displayQuestion();
 				
 			}
@@ -99,7 +99,7 @@
 
       // Delete the file
       desertRef.delete().then(function() {
-		 firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set("");
+		 firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(answerName).child('img').set("");
 		 delete answerToImage[answerName];		 
 		  
       }).catch(function(error) {
@@ -113,7 +113,7 @@
 		 var id=String(uniqueID());         
          var imageRef = storageRef.child(id);		 
 		 imageRef.put(file).then(function(snapshot) {
-		  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(id);
+		  firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(answerName).child('img').set(id);
 			answerToImage[answerName]=id;
 			downloadAndDisplayImageDirectly(id,answerName+"image");			
 		});
@@ -218,12 +218,12 @@
 		return function() {
 				var prevVal = $('input[name="radioInput"]:checked').val();
 			    if(typeof prevVal!='undefined'&& prevVal!="undefined")
-					{	firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(prevVal).update({
+					{	firebase.database().ref('questions'+parent.languageRef).child(category).child("questions").child(question).child("answers").child(prevVal).update({
 						 isCorrect:false				  
 						});
 					}
 			    var val = $(this).val();
-			firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(val).update({
+			firebase.database().ref('questions'+parent.languageRef).child(category).child("questions").child(question).child("answers").child(val).update({
 				 isCorrect:true				  
 				});			
 				}
@@ -274,7 +274,7 @@
 			    if(typeof prevVal=='undefined'|| prevVal=="undefined"){
 					//currently deleted answer was correct,set first answer as correct	
 					if(answerList.length>0){					
-						firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(answerList[0]).update({
+						firebase.database().ref('questions'+parent.languageRef).child(category).child("questions").child(question).child("answers").child(answerList[0]).update({
 						 isCorrect:true				  
 						});					
 						//set radiobutton to true
@@ -283,7 +283,7 @@
 				}
 			
 		
-			firebase.database().ref('questions').child(category).child("questions").child(question).child("answers").child(ansUniqName).remove();			
+			firebase.database().ref('questions'+parent.languageRef).child(category).child("questions").child(question).child("answers").child(ansUniqName).remove();			
 		}
 		})(ansUniqName)); 
 		 colDivDeleteAnswer.appendChild(DeleteAnswerButton);
@@ -300,11 +300,11 @@
 	 }
 	 
 	 function saveAnswerText(UniqName){
-		  var answerText = document.getElementById(UniqName+"text").value;		  firebase.database().ref('questions').child(category).child('questions').child(question).child('answers').child(UniqName).child('text').set(answerText);	 
+		  var answerText = document.getElementById(UniqName+"text").value;		  firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('answers').child(UniqName).child('text').set(answerText);	 
 	 }
 	 
 	  function saveQuestionText(){		  
-		  var questionText = document.getElementById("qTxtID").value;		  firebase.database().ref('questions').child(category).child('questions').child(question).child('text').set(questionText);	 
+		  var questionText = document.getElementById("qTxtID").value;		  firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('text').set(questionText);	 
 	 }
 	 function uploadQImages(files){
 		 
@@ -314,7 +314,7 @@
 		 var id=String(uniqueID());         
          var imageRef = storageRef.child(id);		 
 		 imageRef.put(file).then(function(snapshot) {
-		  firebase.database().ref('questions').child(category).child('questions').child(question).child('img').set(id);
+		  firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('img').set(id);
 			questionImage=id;
 			downloadAndDisplayImageDirectly(questionImage,"qImgID");			
 		});}
@@ -324,7 +324,7 @@
 
       // Delete the file
       desertRef.delete().then(function() {
-		 firebase.database().ref('questions').child(category).child('questions').child(question).child('img').set("");
+		 firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).child('img').set("");
 		 questionImage=null;
 		 document.getElementById("qImgID").src="images/ImgResponsive_Placeholder.png";
 		  
@@ -338,12 +338,12 @@
 function deleteQuestion(){
 		 
 	
-	var decreaseCounter=firebase.database().ref('Categories').child(category);
+	var decreaseCounter=firebase.database().ref('Categories'+parent.languageRef).child(category);
 	decreaseCounter.once("value").then(
       function(snapshot) {
 		
 		 decreaseCounter.set(parseInt(snapshot.val())-1);
-		 firebase.database().ref('questions').child(category).child('questions').child(question).set(null);
+		 firebase.database().ref('questions'+parent.languageRef).child(category).child('questions').child(question).set(null);
 		 window.location = 'about:blank';
   		 
       });	
@@ -362,7 +362,7 @@ function deleteQuestion(){
 		answerToImage={};
 	    answerList=[];
 		
-		var oneQuestionQuery= firebase.database().ref("questions").child(category).child("questions").child(question).orderByKey();
+		var oneQuestionQuery= firebase.database().ref("questions"+parent.languageRef).child(category).child("questions").child(question).orderByKey();
   oneQuestionQuery.once("value").then(
         function(snapshot) {   	  
 			var snapObj=snapshot.val();
