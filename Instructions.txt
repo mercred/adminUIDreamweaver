@@ -1,5 +1,3 @@
-for latex use \( . . . \).
+for latex use \( . . . \) or $$ $$
 for images: use image names from UI
 for links: "<a href="google.com">Best search website!!</a>"
-
-Because app works in vertical layout, better orient images in vertical layout too. It's also better for zooming in the main app.
