@@ -10,22 +10,24 @@
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/custom.css" rel="stylesheet">
 	</head>
-  <body onLoad="displayQuestions()">
+  <body onLoad="displayQuestions()" style="background-color:#c5e3ed">
 	<div class="row">
     <div class="col-lg-12">
+	<br>
      <div class="row">
             <div class="col-lg-2 listColor">
               <label for="textfield2">Enter name:</label>
               <input type="text" name="textfield2" id="questionName" style="width: 100%">            	
             </div>
           </div>
+		  <br>
           <div class="row">
             <div class="col-lg-2 listColor">
-              <button type="button" class="btn btn-default" onClick="createEmptyQuestion()"> Create new question    
+              <button type="button" class="btn btn-primary" onClick="createEmptyQuestion()"> Create new question    
               </button>
             </div>
           </div>
-     
+     <br>
       <div class="row" >
         <div class="col-lg-2 listColor" id="questionDivID">
         	 <label id="title">List of Questions:</label>
