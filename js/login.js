@@ -1,9 +1,15 @@
 var firebaseRef;	
 var languageRef;
+var maxIFrameHeight;
+
 function initializeApp(){
 	
 		languageRef="";
 	var name="Login";
+	
+	
+	
+	
 	    document.getElementById("selectId").onchange = function() {
 			
 			if(this.value=="English") {
@@ -33,19 +39,23 @@ function initializeApp(){
 				  document.getElementById("loginMenuID").style.display="initial";
 				  document.getElementById("loginMenuID").style.visibility="visible";//change both visibility and display because otherwise we can see login menu for a split second after change.
 				   document.getElementById("mainMenuID").style.visibility="hidden";
+				  parentHeight=0;
 				  		
 			  }
 			  else{
+				  
 				  document.getElementById("userPassword").value="";
 		           document.getElementById("userEmail").value="";				   
 		           window.user = user;
 				  languageRef="";
 				  $("#selectId").val("English");
 				   $("#currentUser").html("User: "+user.email);
-				  document.getElementById("loginMenuID").style.display="none";
+				  document.getElementById("loginMenuID").style.display="none";				  
 				  document.getElementById("mainMenuID").style.visibility="hidden";
 				 document.getElementById("mainMenuID").style.visibility="visible";	
 				   document.getElementById("contentIframeID").src="about:blank";
+				 
+				  
 			  }
 			 
 		  });	
@@ -83,10 +93,21 @@ function initializeApp(){
 	  function onCategoryClick(){
 		   document.getElementById("contentIframeID").src="category.html";	
 		   document.getElementById("contentIframeID").style.display="block";
+		  getMaxHeight();
+		  
 	  }
 	  function onQuestionClick(){
+		  
 		   document.getElementById("contentIframeID").src="questionSearch.html";
 		  document.getElementById("contentIframeID").style.display="block";
+		  getMaxHeight();
+		  
+		  
 	  }	
+function getMaxHeight(){
+	var  viewportHeight= Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+	var elemCoord =  document.getElementById("contentIframeID").getBoundingClientRect().top;	
+	maxIFrameHeight=viewportHeight-elemCoord-10;		
+}
 
 

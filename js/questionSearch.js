@@ -54,7 +54,11 @@ function getQueryResults(){
 				entry.setAttribute("id","noMatchNode");
 				result_list.appendChild(entry);
 			}	
-			var mainList=document.getElementById("questions_list").style.visibility="visible";			
+			var mainList=document.getElementById("questions_list").style.visibility="visible";					
+				
+			var listTopCoord =  document.getElementById("questions_list").getBoundingClientRect().top;				
+		    var totalOffset=parent.maxIFrameHeight-listTopCoord;
+		    $('#questions_list').css('max-height',totalOffset);				
 			});		//listener end					
 		}//function getQueryResults() end 
 	

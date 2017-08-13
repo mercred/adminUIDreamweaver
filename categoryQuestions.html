@@ -10,7 +10,7 @@
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/custom.css" rel="stylesheet">
 	</head>
-  <body onLoad="displayQuestions()" style="background-color:#c5e3ed">
+  <body onLoad="displayQuestions()" style="background-color:#c5e3ed;padding-bottom: 10px">
 	<div class="row">
     <div class="col-lg-12">
 	<br>
@@ -31,7 +31,7 @@
       <div class="row" >
         <div class="col-lg-2 listColor" id="questionDivID">
         	 <label id="title">List of Questions:</label>
-            	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black" id="questions_list">
+            	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black; overflow: auto" id="questions_list">
           </ul>
         </div>
         <div class="col-lg-10" id="iFrameID" style="border:5px;">
@@ -41,7 +41,7 @@
     </div>
          
     </div>
-	</div>
+	
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 	<script src="js/libraries/jquery-1.11.3.min.js"></script>
 
@@ -58,13 +58,19 @@
 	
 	
 	<script>
-		iFrameResize({log:false});
+		iFrameResize({log:false});		
+		var h = Math.max(document.documentElement.clientHeight, window.innerHeight);
+		$('#questions_list').css('max-height',h);
 		var currentCategory;
 		var currentQuestion=null;
 		var name="CategoryQuestions";
 		var questionList=[];
 		var languageRef=parent.languageRef;
-		function displayQuestions(){			
+		function displayQuestions(){
+			var listTopCoord =  document.getElementById("questions_list").getBoundingClientRect().top;				
+		var totalOffset=parent.maxIFrameHeight-listTopCoord;
+		$('#questions_list').css('max-height',totalOffset);	
+			console.log("listTopCoord"+listTopCoord+"parent.maxIFrameHeight:"+parent.maxIFrameHeight);			
 			questionList=[];
 			var currentQuestion=null;
 			cleanElement("questions_list");
@@ -80,7 +86,7 @@
 					  questionList.push(key);
 					  addQuestionToList(key);		 
 					});	 
-
+					
 				});
 		}	
 function refreshQuestionList(){

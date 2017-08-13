@@ -6,8 +6,12 @@
 background-color: #F3FFBD;	
 }
 .listColor{
-	background-color: #c5e3ed;
+background-color: #c5e3ed;
 	
+}
+.maxHeight{
+	max-height: 100vh;
+    overflow: auto;	
 }
 
 #mask{

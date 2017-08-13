@@ -16,9 +16,14 @@ function loadCategories(){
     	snapshot.forEach(function(childSnapshot) {		      
           var key = childSnapshot.key;
 		  categories.push(key);
-		  addCategoryToList(key);		 
+		  addCategoryToList(key);
         });	 
-	    
+		
+		
+		var listTopCoord =  document.getElementById("categories_list").getBoundingClientRect().top;				
+		var totalOffset=parent.maxIFrameHeight-listTopCoord;
+		$('#categories_list').css('max-height',totalOffset);		
+	   
     });
 }	
 function addCategoryToList(categoryName){
@@ -64,7 +69,7 @@ function createEmptyCategoryDB(categoryName) {
 function deleteCurrentCategory(){
  
   
-  currentCategory=null;
+ 
 	//delete images of bgMaterial
 	  if (typeof images != "undefined")
 	 {
@@ -78,7 +83,7 @@ function deleteCurrentCategory(){
 	//delete category at last
 	firebase.database().ref('Categories'+parent.languageRef).child(currentCategory).set(null);
   firebase.database().ref('questions'+parent.languageRef).child(currentCategory).set(null);
-	
+  currentCategory=null;
 	
 	
   loadCategories();
