@@ -15,23 +15,11 @@
   <div id="popup">    
     Uploading, please wait...    
   </div>
-  <div id="myModal" class="modal">
+ 
 
-  <!-- Modal content -->
-  <div class="modal-content">   
-	<div class="modal-header">
-			<span class="close">&times;</span>
-			<h2>Background material preview</h2>
-		  </div>
-		  <div class="modal-body" id="modalBodyID">
-			
-			
-		  </div>
-		  <div class="modal-footer">			
-		  </div>
-  </div>
 
-</div>
+
+
  	<div class="container-fluid" id="overlay" > 
 <br>	
       <div class="row">
@@ -70,7 +58,13 @@
                  <div class="btn-group-vertical" style="width: 100%" role="group" aria-label="Vertical button group">
                    <button type="button" class="btn btn-danger"  onClick="deleteCurrentCategory()">Delete category</button>                
                    <a href="#" id="displayQuestionsButton" class="btn btn-primary">Questions</a>       
-                   <button type="button" id="myBtn"  class="btn btn-primary btn-primary:focus " >Show preview</button>                         
+                   <!--<button type="button" id="myBtn"  class="btn btn-primary" >Show preview</button> -->
+                   <button type="button" class="btn btn-primary" onClick="showPreview()"> Show preview
+</button>
+                   
+                                           
+                                                                   
+                                                                                                                   
                  </div>
                </div>
              </div>
@@ -123,9 +117,9 @@
 	</div><!-- container end --> 	
 
 	<!-- Javascript files --> 
-	<script src="js/libraries/jquery-1.11.3.min.js"></script>
-	<script src="js/libraries/bootstrap.js"></script>	
+			
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>	
+	<script src="js/libraries/bootstrap.js"></script>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
 <script src="js/libraries/iframe_resize/iframeResizer.contentWindow.min.js"></script>

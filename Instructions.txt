@@ -1,4 +1,5 @@
-for latex use \( . . . \).
+for latex inline formulas \(formula\),
+centered formulas: "$$formula$$"
 for images: use image names from UI
 for links: "<a href="google.com">Best search website!!</a>"
 

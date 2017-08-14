@@ -37,6 +37,8 @@ function downloadAndDisplayImageDirectly(ImageName,ImageHTML){
 }
 
 
+
+
 function returnImageName(existingArray,name){
    var currentName;
    var counter=0;		 

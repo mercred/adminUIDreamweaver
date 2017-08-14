@@ -13,7 +13,10 @@ background-color: #c5e3ed;
 	max-height: 100vh;
     overflow: auto;	
 }
-
+.modal-backdrop {
+   background-color: gray;
+}
+.modal-backdrop.in { z-index: auto;}
 #mask{
     position: fixed;
     top: 0;

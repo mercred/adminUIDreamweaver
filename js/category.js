@@ -171,7 +171,7 @@ allImagesQuery.once("value").then(
 }		
 function displayImageBG(imageVal){		
 	downloadAndDisplayImage(imageVal,"bgImageId");		
-}	
+}
 function uploadImagesBG(files){
 
  for(var i=0; i<files.length;i++){
@@ -192,7 +192,7 @@ function uploadFilesDB(files,reference){
 	  }).catch(function(error) {
 		// If any task fails, handle this
 	  });
-}	
+}
 function deleteCurrentImageBG(){
   if(currentImageID==null||currentImageID==''){alert("Please select image from the list below.");return;}
   var desertRef = firebase.storage().ref(images[currentImageID]);
@@ -209,23 +209,17 @@ function deleteCurrentImageBG(){
 //____________________________________________________OPERATIONS WITH IMAGES_END______________
 
 //____________________________________________________PREVIEW WINDOW__________________________
-var modal = document.getElementById('myModal');
-var btn = document.getElementById("myBtn");
-var span = document.getElementsByClassName("close")[0];
-btn.onclick = function() {
-			btn.style.display="hidden";
-			modal.style.display = "block";
-			var myNode = document.getElementById("modalBodyID");
-		while (myNode.firstChild) {
-			myNode.removeChild(myNode.firstChild);
-		}
-			parseComplexText(currentCategoryBGText,"modalBodyID");			
-		 }
-span.onclick = function() {
-        modal.style.display = "none";
-		btn.style.display="visible";
-}
-function parseComplexText(text,parentID){
+function showPreview(){	
+	
+	var contentElem=window.parent.document.getElementById('modalContent');	
+	while (contentElem.firstChild) {
+      contentElem.removeChild(contentElem.firstChild);
+    }	
+	parseComplexText(currentCategoryBGText);
+	console.log(window.parent.document.getElementById('modalContent'));
+	window.parent.$('#modalButton').click();	
+}	  
+function parseComplexText(text){
 	    if(text==null) return;
 		var res;
 		var pattern =new RegExp("img\\d+.*");
@@ -236,33 +230,43 @@ function parseComplexText(text,parentID){
 			if(res!=null&&res!=undefined){
 				//add div with current text
 				if(mainString!=""&&mainString!=null){
-					insertText(mainString,parentID);					
+					insertText(mainString);					
 					mainString="";
 				}
 				//insert image	
 				var imgName=images[splitString[i]];				
 				//get URL from name				
-				insertImage(imgName,parentID );
+				insertImage(imgName );
 				}else{
 					mainString+=" "+splitString[i];
 				}		
 		}
 		if(mainString!=""&&mainString!=null){
 			
-			insertText(mainString,parentID);
+			insertText(mainString);
 		}
-		renderMathInElement(document.getElementById(parentID));				
+	renderMathInElement(
+          window.parent.document.getElementById('modalContent'),
+          {
+              delimiters: [
+                  {left: "$$", right: "$$", display: true}, 
+                  {left: "\\(", right: "\\)", display: false}
+              ]
+          }
+      );
+				
 	}
-function insertText(text,parentElementID){
+function insertText(text){
 		var rowDiv = document.createElement("div");
 		rowDiv.className="row";
 		var colDiv=document.createElement("div");
 		colDiv.className="col-lg-12";
 		colDiv.innerHTML=text;		
 		rowDiv.appendChild(colDiv);	
-		document.getElementById(parentElementID).appendChild(rowDiv);		
+	    var contentElem=window.parent.document.getElementById('modalContent');
+		contentElem.appendChild(rowDiv);		
 	}
-function insertImage(imageURL,parentElementID){
+function insertImage(imageURL){
 		var rowDiv = document.createElement("div");
 		rowDiv.className="row";
 		var colDiv=document.createElement("div");
@@ -274,8 +278,24 @@ function insertImage(imageURL,parentElementID){
 		image.alt="Placeholder image";		
 		colDiv.appendChild(image);	
 		rowDiv.appendChild(colDiv);	
-		document.getElementById(parentElementID).appendChild(rowDiv);
-		downloadAndDisplayImageDirectly(imageURL,image.id)
+	    var contentElem=window.parent.document.getElementById('modalContent');
+		contentElem.appendChild(rowDiv);
+		downloadAndDisplayImageModal(imageURL,image.id)
 		
 	}
+function downloadAndDisplayImageModal(ImageName,ImageHTML){	
+	     
+	     if(typeof ImageName=='undefined'||ImageName==""){
+			 //no such file exists
+			 return;
+		 }	
+	 
+	firebase.storage().ref(ImageName).getDownloadURL().then(function(url) {         
+    		 window.parent.document.getElementById(ImageHTML).src = url;
+		  		 
+  		 }).catch(function(error) {
+			 console.log(error);
+             
+           });
+}
 //end of preview window

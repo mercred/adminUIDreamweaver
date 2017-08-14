@@ -10,6 +10,8 @@ function initializeApp(){
 	
 	
 	
+	
+	
 	    document.getElementById("selectId").onchange = function() {
 			
 			if(this.value=="English") {
