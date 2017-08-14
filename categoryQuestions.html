@@ -12,33 +12,34 @@
 	</head>
   <body onLoad="displayQuestions()" style="background-color:#c5e3ed;padding-bottom: 10px">
 	<div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-2">
 	<br>
      <div class="row">
-            <div class="col-lg-2 listColor">
+            <div class="col-lg-12 listColor">
               <label for="textfield2">Enter name:</label>
               <input type="text" name="textfield2" id="questionName" style="width: 100%">            	
             </div>
           </div>
 		  <br>
           <div class="row">
-            <div class="col-lg-2 listColor">
+            <div class="col-lg-12 listColor">
               <button type="button" class="btn btn-primary" onClick="createEmptyQuestion()"> Create new question    
               </button>
             </div>
           </div>
      <br>
       <div class="row" >
-        <div class="col-lg-2 listColor" id="questionDivID">
+        <div class="col-lg-12 listColor" id="questionDivID">
         	 <label id="title">List of Questions:</label>
             	<ul class="nav nav-pills nav-stacked" style="border: 2px solid black; overflow: auto" id="questions_list">
           </ul>
         </div>
-        <div class="col-lg-10" id="iFrameID" style="border:5px;">
-        	<iframe src="questionFragment.html" style="width: 100%;" scrolling="auto"  id="questionsIFrameId"></iframe>        	
-        </div>
+        
       </div>
     </div>
+		<div class="col-lg-10" id="iFrameID" style="border:5px;">
+        	<iframe src="questionFragment.html" style="width: 100%;" scrolling="auto"  id="questionsIFrameId"></iframe>        	
+        </div>
          
     </div>
 	

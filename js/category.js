@@ -226,7 +226,7 @@ span.onclick = function() {
 		btn.style.display="visible";
 }
 function parseComplexText(text,parentID){
-	
+	    if(text==null) return;
 		var res;
 		var pattern =new RegExp("img\\d+.*");
 		var mainString="";
