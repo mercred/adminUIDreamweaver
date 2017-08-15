@@ -15,12 +15,7 @@
   <div id="popup">    
     Uploading, please wait...    
   </div>
- 
-
-
-
-
- 	<div class="container-fluid" id="overlay" > 
+  	<div class="container-fluid" id="overlay" > 
 <br>	
       <div class="row">
       <div class="col-lg-3" id="categories">
@@ -93,7 +88,7 @@
            </div><!-- options and text -->           
       </div>
       </div><!-- main-->
-      <div class="col-lg-4" style="visibility: hidden" id="imagesContainer">
+      <div class="col-lg-4" style="visibility: hidden;border:1px solid black;" id="imagesContainer">
             <div class="row">
               <div class="col-lg-6">
               	<input type="file" multiple onchange="uploadImagesBG(this.files)" id="inputFile" accept=".png" style="display: none"> 
@@ -124,6 +119,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
 <script src="js/libraries/iframe_resize/iframeResizer.contentWindow.min.js"></script>
 	<script src="js/utility/imageUpload.js"></script>
+	<script src="js/libraries/autosize.js"></script>
 	<script>var firebase=parent.firebaseRef;
 		var firebaseRef=firebase;
 	  </script>

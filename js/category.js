@@ -6,6 +6,9 @@ var currentCategory,currentCategoryBGText,currentImageID;
 
 //____________________________________DISPLAY LIST OF CATEGORIES_______________________
 function loadCategories(){  
+	var elemTopCoord =  document.getElementById("textarea").getBoundingClientRect().top;	
+	var totalOffset=parent.maxIFrameHeight-elemTopCoord-50;
+	$('#textarea').css('max-height',totalOffset);
   categories=[];
   cleanElement("categories_list");  	
   document.getElementById("mainContainer").style.visibility="hidden";	
@@ -25,6 +28,9 @@ function loadCategories(){
 		$('#categories_list').css('max-height',totalOffset);		
 	   
     });
+	
+	
+	
 }	
 function addCategoryToList(categoryName){
 	var entry = document.createElement('li');		
@@ -137,7 +143,7 @@ function getCategoryData(category){
 						 	})(category));	
 	document.getElementById('name').innerHTML=currentCategory;
 	getCategoryNQuestions();
-	getCategoryBackgroundMaterialDB();		
+	getCategoryBackgroundMaterialDB();	
 	getListOfBGImagesAndDisplayDB();	
 	document.getElementById("mainContainer").style.visibility="visible";	
     document.getElementById("imagesContainer").style.visibility="visible";
@@ -161,7 +167,8 @@ function getCategoryBackgroundMaterialDB(){
   var getCategoryBackgroundMaterial =  firebase.database().ref("questions"+parent.languageRef+'/'+currentCategory+"/material/text");  
     getCategoryBackgroundMaterial.on("value",function(snapshot) {  	    
   	     currentCategoryBGText = snapshot.val();			  
-  		 document.getElementById("textarea").value=currentCategoryBGText;		 
+  		 document.getElementById("textarea").value=currentCategoryBGText;	
+		autosize(document.getElementById("textarea"));
       });	  		 
 }
 function saveBMChanges(){
