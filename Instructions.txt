@@ -1,6 +1,7 @@
-for latex inline formulas \(formula\),
-centered formulas: "$$formula$$"
-for images: use image names from UI
-for links: "<a href="google.com">Best search website!!</a>"
-
-Because app works in vertical layout, better orient images in vertical layout too. It's also better for zooming in the main app.
+Background material text:
+	for latex inline formulas \(formula\)
+	for latex centered formulas: "$$formula$$"
+	for images: use image names from list of images
+	for links: "<a href="https://www.google.com">Best search website!!</a>"
+Search question:
+	Enter phrase or keyword and search will be run on text of all questions. Example: keyword "city of moving", will output questions with text "What is integral velocity of moving car?" and "Please calculate atrocity of moving vehicle, given a b and c".
