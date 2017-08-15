@@ -60,7 +60,9 @@
 	 var answerList=[];
 	 var questionImage;
 	 
+	 
 	 function generateCreateButton(containerID){
+		 
 		 var rowDiv = document.createElement("div");rowDiv.className="row"; rowDiv.style.border="2px solid black";
 		 var colDiv1=document.createElement("div");	colDiv1.className="col-lg-12";
 		 
@@ -337,6 +339,7 @@
 function deleteQuestion(){
 		 
 	parent.currentQuestion=null;
+	 
 	var decreaseCounter=firebase.database().ref('Categories'+parent.languageRef).child(category);
 	decreaseCounter.once("value").then(
       function(snapshot) {
@@ -354,14 +357,15 @@ function deleteQuestion(){
 		 
   		 
       });	
-	    //delete question image
+	//delete question image
 	   firebase.storage().ref(questionImage).delete(); 
        //delete images of all answer options
 	   for (var key in answerToImage) {
 			if (answerToImage.hasOwnProperty(key)) {
 				 firebase.storage().ref(answerToImage[key]).delete();
 			}
-}
+	   }
+	   
 	}
 	
 	 function displayQuestion(){

@@ -67,10 +67,39 @@ function createEmptyCategoryDB(categoryName) {
   });
 }
 function deleteCurrentCategory(){
- 
-  
- 
-	//delete images of bgMaterial
+ var getCategory =  firebase.database().ref("questions"+parent.languageRef).child(currentCategory).orderByKey();   
+  getCategory.once("value").then(
+    function(snapshot) {	
+		//we have questions
+		var listOfImagesToDelete=[];
+		if(snapshot.hasChild("questions")){
+			var questions=snapshot.val().questions;			
+			for (var question in questions) {
+			  if (questions.hasOwnProperty(question)) {				  
+				//delete question images
+				
+				if(questions[question].hasOwnProperty('img')&&questions[question].img!=""){
+					listOfImagesToDelete.push(questions[question].img);
+				}
+				//delete answer option images
+				if(questions[question].hasOwnProperty('answers')&&questions[question].answers!=""&&questions[question].answers!=undefined&&questions[question].answers!=null){
+					var qAnswers=questions[question].answers;					
+					
+					for (var key in qAnswers) {
+						if (qAnswers.hasOwnProperty(key)&&qAnswers[key].hasOwnProperty('img')&&qAnswers[key].img!="") {					
+							
+							listOfImagesToDelete.push(qAnswers[key].img);
+						}						
+					}
+				}	
+			  }
+			}
+		}
+		
+		for (var i=0;i<listOfImagesToDelete.length;i++) {			
+			firebase.storage().ref(listOfImagesToDelete[i]).delete();			
+	   }
+		//delete images of bgMaterial
 	  if (typeof images != "undefined")
 	 {
 	   for (var key in images) {
@@ -85,8 +114,18 @@ function deleteCurrentCategory(){
   firebase.database().ref('questions'+parent.languageRef).child(currentCategory).set(null);
   currentCategory=null;
 	
-	
   loadCategories();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    });
+	
 }
 function getCategoryData(category){
 	currentCategory= category;
